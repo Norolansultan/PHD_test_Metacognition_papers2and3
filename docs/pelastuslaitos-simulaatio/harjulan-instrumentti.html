@@ -1,0 +1,723 @@
+<title>Harjulan instrumentti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+:root{
+  --bg:#F5F7F9; --surface:#FFFFFF; --surface-2:#EDF1F5;
+  --ink:#131920; --ink-2:#3C4753; --muted:#69747F; --rule:#D9E0E7;
+  --accent:#1F4E79; --accent-soft:#E3ECF4; --water:#4A87AE;
+  --alert:#B92E12; --alert-soft:#F8E5E0; --warn:#9C5C18; --warn-soft:#F6ECDE;
+  --ok:#2C6E49;
+  --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:70ch;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1218; --surface:#141C24; --surface-2:#1B242E;
+    --ink:#E7ECF2; --ink-2:#C2CBD5; --muted:#8E9AA6; --rule:#26313C;
+    --accent:#7FB2DC; --accent-soft:#182634; --water:#8FC4E3;
+    --alert:#FF7B5C; --alert-soft:#2E1A16; --warn:#DDA55F; --warn-soft:#2B2117;
+    --ok:#69B58C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1218; --surface:#141C24; --surface-2:#1B242E;
+  --ink:#E7ECF2; --ink-2:#C2CBD5; --muted:#8E9AA6; --rule:#26313C;
+  --accent:#7FB2DC; --accent-soft:#182634; --water:#8FC4E3;
+  --alert:#FF7B5C; --alert-soft:#2E1A16; --warn:#DDA55F; --warn-soft:#2B2117;
+  --ok:#69B58C;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+
+/* ---------- header ---------- */
+header.top{border-bottom:1px solid var(--rule);background:var(--surface);}
+.masthead{display:flex;flex-direction:column;gap:20px;padding:clamp(38px,6vw,68px) 0 30px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.eyebrow span{color:var(--muted)}
+h1{font-family:var(--sans);font-weight:700;font-size:clamp(34px,6.2vw,58px);line-height:1.02;
+  letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lede{font-size:clamp(17px,2.1vw,20px);color:var(--ink-2);max-width:62ch;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;padding:5px 10px;
+  border:1px solid var(--rule);background:var(--surface-2);color:var(--ink-2);border-radius:2px}
+.chip b{color:var(--ink);font-weight:600}
+
+/* ---------- nav ---------- */
+nav.toc{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--rule)}
+nav.toc ol{display:flex;gap:0;list-style:none;margin:0;padding:0;overflow-x:auto}
+nav.toc a{font-family:var(--mono);font-size:12px;letter-spacing:.03em;text-decoration:none;
+  color:var(--muted);padding:12px 16px;display:block;white-space:nowrap;border-bottom:2px solid transparent}
+nav.toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+nav.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+nav.toc .n{color:var(--accent);font-weight:600;margin-right:7px}
+
+/* ---------- sections ---------- */
+section{padding:clamp(44px,6vw,76px) 0;border-bottom:1px solid var(--rule)}
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;flex-wrap:wrap}
+.snum{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.08em}
+h2{font-family:var(--sans);font-weight:600;font-size:clamp(24px,3.4vw,33px);letter-spacing:-.015em;
+  margin:0;text-wrap:balance}
+h3{font-family:var(--sans);font-weight:600;font-size:19px;letter-spacing:-.01em;margin:34px 0 10px}
+h4{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:26px 0 10px}
+p{max-width:var(--measure);margin:0 0 16px}
+.dek{color:var(--ink-2);max-width:64ch;margin:-12px 0 26px;font-size:16.5px}
+ul,ol{max-width:var(--measure);padding-left:22px;margin:0 0 18px}
+li{margin-bottom:8px}
+strong{font-weight:600}
+em.q{font-style:italic;color:var(--ink-2)}
+code{font-family:var(--mono);font-size:.86em;background:var(--surface-2);padding:1px 5px;
+  border:1px solid var(--rule);border-radius:2px}
+a{color:var(--accent)}
+
+/* ---------- callout ---------- */
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;
+  max-width:var(--measure);margin:0 0 22px}
+.callout p{margin:0}
+.callout.alarm{border-left-color:var(--alert);background:var(--alert-soft)}
+
+/* ---------- cards ---------- */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-bottom:8px}
+.card{background:var(--surface);border:1px solid var(--rule);padding:18px 20px}
+.card h5{font-family:var(--sans);font-size:15.5px;font-weight:600;margin:0 0 7px}
+.card p{font-size:15px;color:var(--ink-2);margin:0;max-width:none}
+.card .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);display:block;margin-bottom:9px}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);margin:0 0 22px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-family:var(--sans);font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;padding:11px 14px;border-bottom:1px solid var(--rule);
+  background:var(--surface-2);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+td.k{color:var(--ink);font-weight:500;white-space:nowrap}
+td.t{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+.pill{font-family:var(--mono);font-size:10px;letter-spacing:.09em;padding:2px 7px;border-radius:2px;
+  text-transform:uppercase;display:inline-block;white-space:nowrap}
+.pill.cued{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.pill.amb{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.pill.unc{background:var(--alert-soft);color:var(--alert);border:1px solid var(--alert)}
+.pill.freeze{background:var(--surface-2);color:var(--ink);border:1px solid var(--rule)}
+
+/* ---------- timeline svg ---------- */
+.tl{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);padding:18px 0 8px;margin-bottom:10px}
+.tl svg{display:block;min-width:760px;width:100%;height:auto}
+.tl text{font-family:var(--mono)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted);
+  margin-bottom:26px}
+.legend i{width:11px;height:11px;display:inline-block;margin-right:5px;vertical-align:-1px}
+
+/* ---------- architecture diagram ---------- */
+.stack{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.layer{border:1px solid var(--rule);background:var(--surface);padding:14px 18px}
+.layer .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:9px}
+.layer .mods{display:flex;flex-wrap:wrap;gap:7px}
+.mod{font-family:var(--sans);font-size:13.5px;padding:6px 11px;border:1px solid var(--rule);
+  background:var(--surface-2);color:var(--ink)}
+.mod.hi{border-color:var(--accent);color:var(--accent);font-weight:600}
+.gate{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;letter-spacing:.06em}
+.layer.build{border-style:dashed}
+
+/* ---------- findings ---------- */
+.finding{border:1px solid var(--rule);border-left:3px solid var(--alert);background:var(--surface);
+  padding:16px 20px;margin-bottom:12px}
+.finding .fh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.fid{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--alert)}
+.fname{font-family:var(--sans);font-weight:600;font-size:15.5px;color:var(--ink)}
+.finding p{font-size:15px;margin:0 0 8px;max-width:none;color:var(--ink-2)}
+.finding .fix{font-size:14.5px;color:var(--ink);border-top:1px solid var(--rule);padding-top:9px;margin:0}
+.finding .fix b{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ok);margin-right:8px}
+
+/* ---------- phases ---------- */
+.phases{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.phase{border:1px solid var(--rule);background:var(--surface);padding:20px}
+.phase .pn{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.phase h5{font-family:var(--sans);font-size:17px;font-weight:600;margin:6px 0 4px}
+.phase .wk{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:12px}
+.phase ul{padding-left:18px;margin:0;font-family:var(--sans);font-size:14px;max-width:none}
+.phase li{margin-bottom:6px;color:var(--ink-2)}
+
+footer{padding:40px 0 60px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+footer p{max-width:70ch}
+
+/* timeline svg styling — via CSS so tokens resolve reliably */
+.tl .band-n{fill:var(--surface-2);stroke:var(--rule)}
+.tl .band-a{fill:var(--accent-soft);stroke:var(--rule)}
+.tl .band-r{fill:var(--alert-soft);stroke:var(--alert)}
+.tl .band-w{fill:var(--warn-soft);stroke:var(--rule)}
+.tl .lb-m{fill:var(--muted)}
+.tl .lb-a{fill:var(--accent)}
+.tl .lb-r{fill:var(--alert)}
+.tl .lb-w{fill:var(--warn)}
+.tl .lb-i{fill:var(--ink-2)}
+.tl .dp{fill:var(--accent)}
+.tl .uncued{fill:none;stroke:var(--alert);stroke-dasharray:4 3}
+.tl .shift{stroke:var(--alert);stroke-width:2.5}
+.tl .pre{fill:none;stroke:var(--warn);stroke-width:2}
+.tl .freeze{fill:var(--ink);opacity:.72}
+.tl .axis{stroke:var(--rule)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap masthead">
+    <div class="eyebrow">Toteutussuunnitelma <span>·</span> Paperit 2 &amp; 3 <span>·</span> 21.8.2026</div>
+    <h1>Harjulan instrumentti</h1>
+    <p class="lede">Miten pelastuslaitoksen simulaatio rakennetaan: yksi jatkuva maastopalotapahtuma,
+      viisitoista päätöspistettä, neljä koeasetelman solua — ja mittausvaatimukset, jotka sanelevat
+      arkkitehtuurin joka kerroksessa.</p>
+    <div class="chips">
+      <span class="chip"><b>88</b> simulaatiominuuttia</span>
+      <span class="chip"><b>15</b> päätöspistettä</span>
+      <span class="chip"><b>4</b> solua · 136 osallistujaa</span>
+      <span class="chip"><b>20</b> viikkoa kehitystä</span>
+      <span class="chip"><b>6</b> löydettyä ristiriitaa</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="#periaatteet"><span class="n">1</span>Periaatteet</a></li>
+      <li><a href="#toiminta"><span class="n">2</span>Toiminta</a></li>
+      <li><a href="#aikajana"><span class="n">3</span>Aikajana</a></li>
+      <li><a href="#arkkitehtuuri"><span class="n">4</span>Arkkitehtuuri</a></li>
+      <li><a href="#sisalto"><span class="n">5</span>Sisältö ja validaattori</a></li>
+      <li><a href="#kartta"><span class="n">6</span>Kartta</a></li>
+      <li><a href="#mittaus"><span class="n">7</span>Mittaus</a></li>
+      <li><a href="#vaiheet"><span class="n">8</span>Vaiheet ja päätökset</a></li>
+    </ol>
+  </div>
+</nav>
+
+<section id="periaatteet">
+ <div class="wrap">
+  <div class="shead"><span class="snum">01</span><h2>Kuusi periaatetta, joista kaikki muu seuraa</h2></div>
+  <div class="callout">
+    <p><strong>Tämä on tutkimusinstrumentti joka sisältää simulaation, ei simulaatio johon on lisätty
+    mittaus.</strong> Kun immersio ja mittaus ovat ristiriidassa, mittaus voittaa. Jokainen alla oleva
+    valinta on tämän lauseen seuraus.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><span class="tag">Alusta</span><h5>Erillinen selaininstrumentti, ei XVR-laajennus</h5>
+      <p>Optioesto, päätöspalkin countdown, näytön pimennys jäädytyksessä, sanatarkka determinismi ja
+      tapahtumatason lokitus eivät ole XVR:n kautta toteutettavissa. XVR sopii korkeintaan harjoituslohkoon.</p></div>
+    <div class="card"><span class="tag">Rakenne</span><h5>Domain-neutraali moottori</h5>
+      <p>Pelastus on sisältöpaketti, armeija on toinen sisältöpaketti. Uhkamalli on rajapinta:
+      etenevä palo ja etenevä vastustaja ovat sama asia identtisellä maastolla.</p></div>
+    <div class="card"><span class="tag">Aika</span><h5>Yksi kello</h5>
+      <p>Simuloitu kello tikittää kiinteällä askeleella, pysähtyy jäädytyksissä eikä koskaan odota
+      osallistujaa. Skenaariot etenevät ajassa — se on vertailukelpoisuuden ehto.</p></div>
+    <div class="card"><span class="tag">Tieto</span><h5>Kaksi kerrosta, yksi portti</h5>
+      <p>Ground truth ei ole saavutettavissa osallistujan buildissa millään reitillä. Kaikki mitä
+      ruudulle päätyy, kulkee havaintoportin läpi ikäänsä vastaavasti haalennettuna.</p></div>
+    <div class="card"><span class="tag">Korpus</span><h5>Tieto kertyy ajassa</h5>
+      <p>Jokaisella merkinnällä on <code>valid_from</code> ja mahdollinen korvaaja. Sama kysymys
+      eri hetkellä palauttaa eri vastauksen — ja järjestelmä ei koskaan kerro, että uutta on tullut.</p></div>
+    <div class="card"><span class="tag">Mittaus</span><h5>Ilman lokia mittausta ei ole</h5>
+      <p>Muuttuja lisätään lokispesifikaatioon ennen kuin ominaisuus rakennetaan. Kaikki johdetut
+      muuttujat lasketaan raakatapahtumista skriptillä, joka voidaan ajaa uudelleen.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="toiminta">
+ <div class="wrap">
+  <div class="shead"><span class="snum">02</span><h2>Mitä pelastuslaitoksen puolella tapahtuu</h2></div>
+  <p class="dek">Loppukesän maastopalo. Osallistuja johtaa kaistaa BRAVO — noin 4 × 4 km:n lohkoa
+  30 × 30 km:n onnettomuusalueen etelä-keskiosassa. Suojattava kohde on Harjulan saha, kilometrin
+  päälinjan takana. Sahan menetys on epäonnistumisehto.</p>
+
+  <h3>Roolit ja käskyvalta</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Rooli</th><th>Kuka</th><th>Näkyy osallistujalle</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Pelastustoiminnan johtaja</td><td>Käsikirjoitettu</td><td>Radiossa; ohjauksen lähde (G-01, G-03)</td></tr>
+      <tr><td class="k">Operaatiopäällikkö</td><td>Käsikirjoitettu</td><td>Antaa kaistan tehtävän S01:ssä</td></tr>
+      <tr><td class="k">Kaistanjohtaja BRAVO</td><td><strong>Osallistuja</strong></td><td>—</td></tr>
+      <tr><td class="k">Muodostelmat A, B, C</td><td>Agentteja</td><td>Käskyvallassa. Sijainti, vesi-%, altistuminen, LCES-tila</td></tr>
+      <tr><td class="k">Sammutusyksikkö, säiliöauto, dozer</td><td>Agentteja</td><td>Käskyvallassa. Hitaita sitoutumaan</td></tr>
+      <tr><td class="k">Naapurikaistat CHARLIE…JULIET</td><td>Agentteja</td><td>Ei käskyvallassa. Radio, kartta, korpus</td></tr>
+      <tr><td class="k">KILO-1 / KILO-2</td><td>Agentteja</td><td>Ei käskyvallassa. Ylilento-ohjelma, IR-havainnot</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Neljä tiedon kanavaa — ja se ainoa ero</h3>
+  <p>Radioverkko, rutiini-SITREPit, kyselyrakentaja ja karttanäkymä. Kolme ensimmäistä ovat
+  <strong>identtiset kaikissa neljässä solussa</strong>. Ainoa ero ehtojen välillä on, että ehto B saa
+  kyselyrakentajaan kentät <strong>perustelu</strong> ja <strong>luottamus</strong>.</p>
+  <div class="callout">
+    <p>Manipulaatio ei ole pääsy naapurien <em class="q">tietoon</em> vaan pääsy heidän
+    <strong>päättelyynsä</strong>. Yksikään SITREP-formaatti ei kanna lausetta <em class="q">valitsin
+    tämän koska arvioin X, ja olin siitä 60 % varma</em>. Siksi ehto A ei ole tiedosta paitsiossa —
+    ja siksi tulos on luettavissa perustelun saatavuuden ansioksi.</p>
+  </div>
+
+  <h3>Toimintotaksonomia ja LCES-portti</h3>
+  <p>Päätöspalkki tarjoaa 3–6 kiinteää optiota. Optiot koostetaan yhdeksästä toimintoluokasta:
+  sijoittelu, sammutustapa, ankkurointi, kohteen suojaus, vetäytyminen, tiedustelu, huolto,
+  turvallisuus ja pyyntö ylöspäin. Kymmenes vaihtoehto on aina olemassa: <strong>ei toimintaa</strong>,
+  jolloin oletustoiminta laukeaa.</p>
+  <div class="callout alarm">
+    <p><strong>LCES on portti, ei ulottuvuus.</strong> Jos sitoutuva toiminto ei säilytä tähystystä,
+    viestiyhteyksiä, poistumisteitä ja turva-alueita jokaiselle osalliselle muodostelmalle, päätöksen
+    laatu on 0 riippumatta muista ulottuvuuksista. Jokaisella optiolla on siksi LCES-tila jo
+    sisältötiedostossa.</p>
+  </div>
+
+  <h3>Kolme toimitustyyppiä</h3>
+  <div class="grid">
+    <div class="card"><span class="tag">Cued · 8 skenaariota</span><h5>Tapahtuma pakottaa huomion</h5>
+      <p>Päätöspalkki aukeaa, countdown juoksee. Mitataan valintaa tunnettujen vaatimusten alla.</p></div>
+    <div class="card"><span class="tag">Ambiguous · 5 skenaariota</span><h5>Vihje ilman merkitystä</h5>
+      <p>Palkki aukeaa, mutta kehystys on neutraali. Mitataan tulkintaa.</p></div>
+    <div class="card"><span class="tag">Uncued · 2 skenaariota</span><h5>Ei mitään</h5>
+      <p>Ei palkkia, ei ikonia, ei ääntä, ei countdownia. Näkymätön ikkuna on olemassa vain lokissa.
+      Palkin avaaminen S06:ssa kertoisi, että hiljaisuus vaatii päätöksen — ja tuhoaisi mittarin.</p></div>
+  </div>
+
+  <p><strong>Jokainen ikkuna umpeutuu.</strong> Muodostelmat jatkavat viimeisillä käskyillä,
+  radiossa kerrotaan mitä nyt tapahtuu, ja lokiin menee ei-päätös sääntöineen. Kaistan tasolla ei ole
+  varajohtajaa keksimässä mitään. Osallistuja, joka ei koskaan päätä, tuottaa löydöksen — ei rikkinäistä
+  tietuetta.</p>
+ </div>
+</section>
+
+<section id="aikajana">
+ <div class="wrap">
+  <div class="shead"><span class="snum">03</span><h2>88 minuuttia, viisi vaihetta, yksi käännös</h2></div>
+  <p class="dek">Ohjaus annetaan S05:ssä, sen premissi tuhoutuu S08:ssa ja se vedetään pois S13:ssa.
+  Sama tuulen käännös mitätöi yhtä aikaa ohjauksen ja kaikki naapurien ennakkotapaukset — siksi
+  kaksi paperia mahtuu yhteen tapahtumaan.</p>
+
+  <div class="tl">
+  <svg viewBox="0 0 900 150" role="img" aria-label="Tapahtuman aikajana 0:00–1:28, vaiheet P1–P5, viisitoista päätöspistettä, kolme jäädytystä ja tuulen käännös kohdassa 0:48">
+    <!-- phase bands -->
+    <rect class="band-n" x="20" y="34" width="199" height="26"/>
+    <rect class="band-a" x="219" y="34" width="145" height="26"/>
+    <rect class="band-r" x="364" y="34" width="41" height="26"/>
+    <rect class="band-w" x="405" y="34" width="215" height="26"/>
+    <rect class="band-n" x="620" y="34" width="235" height="26"/>
+    <text class="lb-m" x="26" y="27" font-size="10.5" letter-spacing="1.4">P1 EI OHJAUSTA</text>
+    <text class="lb-a" x="225" y="27" font-size="10.5" letter-spacing="1.4">P2 OHJAUS VOIMASSA</text>
+    <text class="lb-r" x="370" y="27" font-size="10.5" letter-spacing="1.4">P3</text>
+    <text class="lb-w" x="411" y="27" font-size="10.5" letter-spacing="1.4">P4 HÄIRIÖN JÄLKEEN</text>
+    <text class="lb-m" x="626" y="27" font-size="10.5" letter-spacing="1.4">P5 OHJAUS POIS</text>
+
+    <!-- DP ticks: x = 20 + (min/88)*835 -->
+    <g class="dp">
+      <rect x="39"  y="34" width="3" height="26"/><rect x="96"  y="34" width="3" height="26"/>
+      <rect x="143" y="34" width="3" height="26"/><rect x="190" y="34" width="3" height="26"/>
+      <rect x="238" y="34" width="3" height="26"/><rect x="361" y="34" width="3" height="26"/>
+      <rect x="342" y="34" width="3" height="26"/>
+      <rect x="523" y="34" width="3" height="26"/><rect x="561" y="34" width="3" height="26"/>
+      <rect x="608" y="34" width="3" height="26"/><rect x="646" y="34" width="3" height="26"/>
+      <rect x="694" y="34" width="3" height="26"/><rect x="751" y="34" width="3" height="26"/>
+      <rect x="798" y="34" width="3" height="26"/>
+    </g>
+    <!-- uncued S06 window 0:36-0:44 -->
+    <rect class="uncued" x="361" y="34" width="76" height="26"/>
+    <text class="lb-r" x="366" y="76" font-size="10">S06 näkymätön</text>
+
+    <!-- S08 marker -->
+    <line class="shift" x1="475" y1="18" x2="475" y2="66"/>
+    <text class="lb-r" x="482" y="18" font-size="12" font-weight="600">S08 · TUULEN KÄÄNNÖS 0:48</text>
+    <!-- precursors -->
+    <circle class="pre" cx="399" cy="47" r="4"/>
+    <circle class="pre" cx="456" cy="47" r="4"/>
+    <text class="lb-w" x="330" y="96" font-size="10">esioire 0:40 · korpus</text>
+    <text class="lb-w" x="430" y="112" font-size="10">radiovihje 0:46</text>
+
+    <!-- freezes -->
+    <g>
+      <rect class="freeze" x="228" y="30" width="7" height="34"/>
+      <rect class="freeze" x="551" y="30" width="7" height="34"/>
+      <rect class="freeze" x="789" y="30" width="7" height="34"/>
+    </g>
+    <text class="lb-i" x="212" y="132" font-size="10">F1 0:22</text>
+    <text class="lb-i" x="535" y="132" font-size="10">F2 0:56</text>
+    <text class="lb-i" x="773" y="132" font-size="10">F3 1:21</text>
+
+    <!-- axis -->
+    <line class="axis" x1="20" y1="66" x2="855" y2="66"/>
+    <g class="lb-m" font-size="10">
+      <text x="20"  y="80">0:00</text><text x="205" y="80">0:20</text>
+      <text x="395" y="80">0:40</text><text x="585" y="80">1:00</text>
+      <text x="775" y="80">1:20</text><text x="828" y="80">1:28</text>
+    </g>
+  </svg>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--accent)"></i>päätöspiste</span>
+    <span><i style="background:var(--ink);opacity:.72"></i>SAGAT-jäädytys, kello pysähtyy</span>
+    <span><i style="border:2px solid var(--warn)"></i>häiriön esioire</span>
+    <span><i style="border:2px dashed var(--alert)"></i>näkymätön ikkuna</span>
+  </div>
+
+  <h3>Viisitoista päätöspistettä</h3>
+  <div class="tw"><table>
+    <thead><tr><th>S</th><th>Alkaa</th><th>Ikkuna</th><th>Tyyppi</th><th>Tilanne</th><th>Ohjaus</th><th>Ennakko&shy;tapaus</th></tr></thead>
+    <tbody>
+      <tr><td class="k">S01</td><td class="t">0:02</td><td class="t">5 min</td><td><span class="pill cued">cued</span></td><td>Kaistan tehtävä; ensimmäinen resurssien sitominen</td><td>—</td><td>ei ole</td></tr>
+      <tr><td class="k">S02</td><td class="t">0:08</td><td class="t">4 min</td><td><span class="pill cued">cued</span></td><td>Paine sitoa reservi ennen arviointia</td><td>—</td><td>osuva</td></tr>
+      <tr><td class="k">S03</td><td class="t">0:13</td><td class="t">4 min</td><td><span class="pill amb">ambiguous</span></td><td>Tilaisuusikkuna; naapurit sitoutuvat kuuluvasti. Ilmapäivitys tulossa</td><td>—</td><td>harhaanjohtava</td></tr>
+      <tr><td class="k">S04</td><td class="t">0:18</td><td class="t">4 min</td><td><span class="pill amb">ambiguous</span></td><td>Muodostelma C: heikentynyt näkyvyys idässä. Yksi lähde, vahvistamaton</td><td>—</td><td>ei ole</td></tr>
+      <tr><td class="k">F1</td><td class="t">0:22</td><td class="t">3 min</td><td><span class="pill freeze">jäädytys</span></td><td>Vakiintunut kuva, heikko vastasignaali mukana mutta integroimatta</td><td colspan="2">L1×3 · L2×2 · L3×1</td></tr>
+      <tr><td class="k">S05</td><td class="t">0:23</td><td class="t">5 min</td><td><span class="pill cued">cued</span></td><td>Ankkurivalinta; ohjaus annetaan ja vesi alittaa 40 % samassa minuutissa</td><td>konflikti</td><td>harhaanjohtava</td></tr>
+      <tr><td class="k">S07</td><td class="t">0:34</td><td class="t">5 min</td><td><span class="pill amb">ambiguous</span></td><td>Itähavainnot muuttuvat haettaviksi. Uskomuksen revisio — vahvin ennustaja</td><td>epämääräinen</td><td>osuva</td></tr>
+      <tr><td class="k">S06</td><td class="t">0:36</td><td class="t">8 min</td><td><span class="pill unc">uncued</span></td><td>JULIETin SITREP ei tule. Hiljaisuus on havaittava verkon rytmiä vasten</td><td>epämääräinen</td><td>ei ole</td></tr>
+      <tr><td class="k">S08</td><td class="t">0:48</td><td class="t">4 min</td><td><span class="pill unc">unc → cued</span></td><td><strong>Tuulen käännös ~60°.</strong> Itäsuunta lähtee juoksuun ja koukkaa linjan itäpään ympäri</td><td>—</td><td>mitätöity</td></tr>
+      <tr><td class="k">S09</td><td class="t">0:53</td><td class="t">3 min</td><td><span class="pill cued">cued</span></td><td>Ankkuri ei pidä, ohjaus sanoo yhä pidä. <strong>Paperi 3 ensisijainen</strong></td><td>konflikti</td><td>osuva</td></tr>
+      <tr><td class="k">F2</td><td class="t">0:56</td><td class="t">4 min</td><td><span class="pill freeze">jäädytys</span></td><td>Kuva heti kehyksen murruttua — asetelman arvokkain</td><td colspan="2">L1×2 · L2×3 · L3×3</td></tr>
+      <tr><td class="k">S10</td><td class="t">0:57</td><td class="t">4 min</td><td><span class="pill amb">ambiguous</span></td><td>Sitoutuminen huonosti havaittuun takamaastoon. Korpus palauttaa lähes tyhjää</td><td>epämääräinen</td><td>ei ole</td></tr>
+      <tr><td class="k">S11</td><td class="t">1:02</td><td class="t">3 min</td><td><span class="pill cued">cued</span></td><td>Lyhyt ikkuna juoksun pysäyttämiseen; naapurit hyökkäävät, ohjaus hillitsee</td><td>konflikti</td><td>harhaanjohtava</td></tr>
+      <tr><td class="k">S12</td><td class="t">1:06</td><td class="t">4 min</td><td><span class="pill cued">cued</span></td><td>Ohjaus ja paikallinen harkinta samaa mieltä. <strong>Kontrolli</strong></td><td>yhtenevä</td><td>ei ole</td></tr>
+      <tr><td class="k">S13</td><td class="t">1:11</td><td class="t">5 min</td><td><span class="pill cued">cued</span></td><td>Ohjaus vedetään pois; kaikki estot avautuvat</td><td>—</td><td>ei ole</td></tr>
+      <tr><td class="k">S14</td><td class="t">1:17</td><td class="t">4 min</td><td><span class="pill amb">ambiguous</span></td><td>Myöhäinen tieto tekee aiemmasta sitoumuksesta väärän. Peruminen yhä mahdollista</td><td>—</td><td>osuva</td></tr>
+      <tr><td class="k">F3</td><td class="t">1:21</td><td class="t">3 min</td><td><span class="pill freeze">jäädytys</span></td><td>Toipuminen ilman ohjausta</td><td colspan="2">L1×2 · L2×2 · L3×2</td></tr>
+      <tr><td class="k">S15</td><td class="t">1:22</td><td class="t">6 min</td><td><span class="pill cued">cued</span></td><td>Vuoronvaihto tulevalle kaistanjohtajalle, vapaa teksti</td><td>—</td><td>ei ole</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout alarm">
+    <p><strong>Mitä S08:ssa tarkoituksella jätetään antamatta:</strong> ei ilmoitusta siitä että ohjaus
+    on nyt pätemätön, ei uudelleenannettua ohjausta, ei naapurimerkintöjen merkitsemistä vanhentuneiksi,
+    ei yhteenvetoa muutoksesta. Pätemättömyyden tunnistaminen <em class="q">on</em> mitattava käyttäytyminen.
+    Jokainen myöhemmin lisätty <em class="q">avulias</em> ilmoitus tuhoaa sen hiljaa.</p>
+  </div>
+ </div>
+</section>
+
+<section id="arkkitehtuuri">
+ <div class="wrap">
+  <div class="shead"><span class="snum">04</span><h2>Arkkitehtuuri</h2></div>
+  <p class="dek">Kolme kovaa rajaa pitävät rakennelman kasassa: ydin ei tunne DOMia eikä verkkoa,
+  havaintoportti on ainoa reitti maailmasta käyttöliittymään, ja sisältöpaketti on dataa eikä koodia.</p>
+
+  <div class="stack">
+    <div class="layer build">
+      <div class="lab">Build-aika · Node · tulos hashataan ja lukitaan</div>
+      <div class="mods"><span class="mod">Excel → YAML -tuonti</span><span class="mod hi">Sisältövalidaattori</span>
+        <span class="mod">Maaston leipominen</span><span class="mod">Palorintaman leipominen</span>
+        <span class="mod">content-pack.json + SHA-256</span></div>
+    </div>
+    <div class="gate">↓ versioidut, muuttumattomat assetit</div>
+    <div class="layer">
+      <div class="lab">Sim core · puhdas TypeScript · ei DOMia, ei I/O:ta, ei satunnaisuutta</div>
+      <div class="mods"><span class="mod hi">Kello + ajastin</span><span class="mod">Maailmatila</span>
+        <span class="mod">Agenttiajuri</span><span class="mod">Resurssimalli</span>
+        <span class="mod hi">Aikaindeksoitu korpus</span><span class="mod">Projektio-oraakkeli</span>
+        <span class="mod">Uhkamalli (rajapinta)</span><span class="mod">Oletustoimintamoottori</span></div>
+    </div>
+    <div class="gate">↓ havaintoportti — mitä <em>tämä</em> osallistuja tietää, milloin, kuinka vanhana</div>
+    <div class="layer">
+      <div class="lab">Käyttöliittymä · React + canvas</div>
+      <div class="mods"><span class="mod">Kartta, 2 mittakaavaa</span><span class="mod hi">Päätöspalkki + countdown</span>
+        <span class="mod hi">Kyselyrakentaja</span><span class="mod">Radioloki</span>
+        <span class="mod">Tilannepaneeli</span><span class="mod">Ohjauspaneeli</span>
+        <span class="mod">Koetinkerros</span></div>
+    </div>
+    <div class="gate">↓ jokainen tilamuutos on jo tapahtuma</div>
+    <div class="layer">
+      <div class="lab">Telemetria ja tutkijan työkalut</div>
+      <div class="mods"><span class="mod hi">Append-only tapahtumajono</span><span class="mod">30 s tilannekuva</span>
+        <span class="mod">Offline-lataus + hash</span><span class="mod">Tutkijakonsoli</span>
+        <span class="mod">Uusinta, ehtomerkinnät riisuttuna</span><span class="mod">derive.ts → CSV</span></div>
+    </div>
+  </div>
+
+  <h3>Kyselymoottori — viisi askelta, aina samassa järjestyksessä</h3>
+  <ol>
+    <li>Rakenna kyselyavain paikoista <strong>KUKA × MITÄ × MILLOIN</strong> (tai kartoita vapaa teksti aikomukseksi).</li>
+    <li>Suodata korpus ajassa: <code>validFrom ≤ tSim</code>. Kaikki muu on olematonta.</li>
+    <li>Suodata kyselypolulla; poimi myös häiriösyötit — tavoitesuhde 3:1.</li>
+    <li><strong>Ehtoportti:</strong> ehdossa A kentät <code>rationale</code> ja <code>confidence</code> eivät ole tyhjiä vaan <em class="q">olemattomia</em>.</li>
+    <li>Palauta kiinteän 2,5 s viiveen jälkeen, aina havaintoaikaleiman kanssa.</li>
+  </ol>
+
+  <h3>Palon leviäminen on käsikirjoitettu, ei simuloitu</h3>
+  <p>Ajoaikainen leviämismalli rikkoisi kolme asiaa kerralla: determinismin (liukuluvut eroavat
+  selainten välillä), tapahtuma-ajoituksen (S08:n on osuttava sekunnilleen samaan hetkeen kaikilla) ja
+  validoinnin (kukaan ei hyväksy mallia, jonka tulos riippuu osallistujan toimista). Rintama on siksi
+  <strong>aikaleimattu polygonisarja</strong> — yksi kehä per simulaatiominuutti — tuotettuna offline
+  maastotietoisella mallilla ja käytännön asiantuntijoiden hyväksymänä.</p>
+  <p>Paikallinen seuraus säilyy silti: osallistujan päätökset eivät liikuta rintamaa, mutta ne
+  ratkaisevat <strong>mitä rintama kohtaa</strong> — onko linja pidetty, onko murroslinja raivattu,
+  onko saha suojattu, missä muodostelmat ovat.</p>
+ </div>
+</section>
+
+<section id="sisalto">
+ <div class="wrap">
+  <div class="shead"><span class="snum">05</span><h2>Sisältöputki ja validaattori</h2></div>
+  <p class="dek">Työkirja kertoo itse, mikä edellisen version tappoi: välilehdet ajautuivat erilleen
+  toisistaan. Ihminen ei pysty ylläpitämään sitä invarianttia kolmenkymmenen välilehden yli kuukausien
+  ajan. Kone pystyy — siksi validaattori on komponentti, ei työkalu, ja se on vaiheen 1 toimitus.</p>
+
+  <p><code>Excel</code> → <code>YAML (versionhallinnassa)</code> → <code>validaattori</code> →
+  <code>content-pack.json + hash</code>. Excel pysyy kirjoitusalustana, koska ohjaajat lukevat sitä.
+  YAML on totuus buildille, koska siitä saa diffit ja katselmukset.</p>
+
+  <h4>Validaattorin kovimmat säännöt</h4>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Sääntö</th><th>Mitä se estää</th></tr></thead>
+    <tbody>
+      <tr><td class="k">R3</td><td>Ikkunoiden summa + jäädytykset = 98 min</td><td>Aritmetiikkavian, joka löytyi jo kerran auditissa</td></tr>
+      <tr><td class="k">R4</td><td>Uncued ⇒ ei palkkia, ei countdownia, ei aikajanamerkintää</td><td>Negatiivisen vihjeen mittarin tuhoutumisen</td></tr>
+      <tr><td class="k">R5</td><td>SPAM-osio kaikkien ikkunoiden ulkopuolella — myös näkymättömien</td><td>Koettimen kilpailun mitattavan päätöksen kanssa</td></tr>
+      <tr><td class="k">R6</td><td>Mikään ei ennakoi jäädytystä tai koetinta</td><td>Mittarin muuttumisen harjoitteluksi</td></tr>
+      <tr><td class="k">R9</td><td>S08:n esioireella ≥ 3 kyselypolkua</td><td>Havaintoviiveen muuttumisen ajoituksen tuuriksi</td></tr>
+      <tr><td class="k">R11</td><td>Ehto A ei tavoita perustelu- eikä luottamuskenttää millään ajanhetkellä</td><td>Manipulaation vuotamisen</td></tr>
+      <tr><td class="k">R12</td><td>Takamaasto palauttaa ≤ N merkintää ennen 1:01</td><td>S10:n hiljaisen täyttämisen</td></tr>
+      <tr><td class="k">R13</td><td>Ei ohjaustapahtumaa välillä 0:48–1:11</td><td>Mitattavan hiljaisuuden rikkoutumisen</td></tr>
+      <tr><td class="k">R16</td><td>Uusinta ei paljasta haaraa</td><td>Sokkokoodauksen pilaantumisen</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Kuusi ristiriitaa, jotka validaattori löytää työkirjasta tänään</h3>
+  <p>Yksikään ei näy yhdeltä välilehdeltä. Kaikki ovat halpoja korjata nyt ja kalliita korjata
+  pilotin jälkeen.</p>
+
+  <div class="finding">
+    <div class="fh"><span class="fid">V-1</span><span class="fname">Kolmen haaran termistö elää yhä kolmella välilehdellä</span></div>
+    <p><em class="q">Peer Wiki Content</em> puhuu ryhmästä C, <em class="q">Agent Spec</em> sanoo
+    <em class="q">Group C sees these; groups A and B do not</em>, ja <em class="q">Development Spec</em>
+    määrittelee wikin renderöinnin muodossa <em class="q">none / summary / full</em>. Päätös 21.8. on
+    kaksi haaraa: A = vakiotieto, B = A + perustelu ja luottamus.</p>
+    <p class="fix"><b>korjaus</b>Korvaa kaikki C-viittaukset ja kolmiportainen renderöinti muodolla
+    <code>standard / +rationale</code>. Tämä on rakennusvirhe odottamassa tapahtumistaan: kehittäjä
+    toteuttaisi kolme tasoa.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fh"><span class="fid">V-2</span><span class="fname">SPAM-osio 1 on päätösikkunan sisällä</span></div>
+    <p>Master Timeline sijoittaa osion hetkeen 0:10 merkinnällä <em class="q">in the gap before S03</em>.
+    S02:n ikkuna on 0:08–0:12 — osio osuu sen keskelle, vastoin aikajanan omaa sääntöä.</p>
+    <p class="fix"><b>korjaus</b>Siirrä S03:n alku 0:14:ään ja SPAM 1 hetkeen 0:12:45. Vaatii aikajanan
+    uudelleenlaskennan — juuri siksi aikajana on yksi tiedosto.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fh"><span class="fid">V-3</span><span class="fname">G-02 on merkitty annettavaksi S06:ssa, joka on uncued</span></div>
+    <p>Master Timelinellä ei ole ohjaustapahtumaa S06:ssa. Jos G-02 lähetettäisiin verkkoon, se olisi
+    vihje siitä että S06:ssa tapahtuu jotain — ja tuhoaisi koko negatiivisen vihjeen mittarin.</p>
+    <p class="fix"><b>korjaus</b>G-02 on <strong>voimassa oleva rajoitetila</strong>, joka on
+    ohjauspaneelissa S05:stä lähtien. Mitään ei lähetetä S06:ssa.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fh"><span class="fid">V-4</span><span class="fname">SPAM-osio 3 osuu S06:n näkymättömän ikkunan päätepisteeseen</span></div>
+    <p>Osio on 0:44, ikkuna 0:36–0:44. Sääntö <em class="q">vain ikkunoiden väleissä</em> kirjoitettiin
+    näkyviä ikkunoita ajatellen, mutta uncued-ikkuna on mittaava ikkuna siinä missä muutkin: koetin juuri
+    sen sulkeutuessa voi joko herättää huomaamaan hiljaisuuden tai peittää sen.</p>
+    <p class="fix"><b>korjaus</b>Siirrä 0:45:een — tai poista ja siirrä tason 3 mittaus jäädytykseen F2.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fh"><span class="fid">V-5</span><span class="fname">Esioire ei ole S07:n aikana, vaikka aikajana niin selittää</span></div>
+    <p>Esioire on 0:40; S07:n ikkuna on 0:34–0:39. Kirjoitettu perustelu — että varoitus saapuu kesken
+    toista tehtävää — on oikea, mutta luvut eivät tue sitä.</p>
+    <p class="fix"><b>korjaus</b>Pidennä S07:n ikkuna 0:41:een. Silloin esioire saapuu kesken aktiivista
+    tulkintatehtävää, mikä on juuri se realismi jota selitys tavoittelee.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fh"><span class="fid">V-6</span><span class="fname">Kaksi mittaria viittaa käyttöliittymään jota ei enää ole</span></div>
+    <p><code>wiki_open_count</code> ja <code>wiki_dwell_ms</code> ovat jäänteitä erillisestä
+    wiki-paneelista. Päätös 21.8. yhdisti naapurit, IR:n ja ohjauksen yhdeksi kyselypinnaksi, joten
+    näillä muuttujilla ei ole lähdettä.</p>
+    <p class="fix"><b>korjaus</b>Korvaa muuttujalla <code>rationale_query_count</code> ja jo listalla
+    olevalla <code>answer_dwell_ms</code>.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Sisältötyö on kriittisellä polulla vähintään yhtä paljon kuin koodi.</strong> Tekemättä
+    on ~60 korpusmerkintää, ~180 häiriösyöttiä, ~70 optiota LCES-tiloineen, 12 SPAM-osiota, ~40
+    SAGAT-osiota ja ~120 radioviestiä äänityksineen: 10–14 viikkoa osa-aikaisena. Laatuankkurit
+    vaativat asiantuntijatyöpajan, ja niillä on koko projektin pisin läpimenoaika — aloita niistä.</p>
+  </div>
+ </div>
+</section>
+
+<section id="kartta">
+ <div class="wrap">
+  <div class="shead"><span class="snum">06</span><h2>Kartta: prototyypistä instrumentin renderöijäksi</h2></div>
+  <p class="dek"><code>harjulakartta.html</code> on hyvä prototyyppi ja väärä ajoaikainen ratkaisu.
+  Se on tehnyt vaikeimman osan — löytänyt parametrit, joilla generoitu maasto näyttää suomalaiselta —
+  ja se on jo yhteensopiva skenaarion maailman kanssa.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Prototyypissä</th><th>Arvio</th><th>Toimenpide</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Deterministinen kenttä siemenestä</td><td>Oikein. Sama siemen, sama maasto</td><td>Siirretään sellaisenaan <code>packages/terrain</code></td></tr>
+      <tr><td class="k">Maasto ennen ihmisen jälkeä</td><td>Oikea kausaalijärjestys: tie kulkee harjulla koska harju on ensin</td><td>Pidetään</td></tr>
+      <tr><td class="k">Peruskarttagrafiikka</td><td>Käytännön asiantuntija tunnistaa lajityypin sekunnissa</td><td>Siirretään leipomisskriptiin</td></tr>
+      <tr><td class="k">Kaksi mittakaavaa, sektori 4 × 4 km</td><td>Vastaa täsmälleen suunniteltua maailmaa</td><td>Pidetään</td></tr>
+      <tr><td class="k">Generointi ajoaikana</td><td><strong>Mitattu: 1,54 s</strong> pelkälle 470×470-luokitukselle, päälle korkeuskäyrät ja nimistö</td><td>Siirretään Node-buildiin; ajossa ladataan valmis PNG</td></tr>
+      <tr><td class="k">Selainten välinen determinismi</td><td><code>Math.exp</code>, <code>Math.hypot</code>, <code>Math.sin</code> ovat toteutuskohtaisia</td><td>Leivotaan assetiksi ja hashataan — sama kartta kaikille, myös kahden vuoden päästä</td></tr>
+      <tr><td class="k">Maailma ja renderöinti samassa tiedostossa</td><td><code>OPS</code> sisältää linjan, varalinjan ja naapurit — se on skenaariodataa</td><td>Puretaan sisältöpaketin piirteiden rekisteriksi</td></tr>
+      <tr><td class="k">Ruudukon koordinaatit</td><td>Nelinumeroinen <em class="q">itäkoordinaatti</em> 6820 ei ole mahdollinen TM35FIN:ssä</td><td>Oikea affiini muunnos, uskottava fiktiivinen origo</td></tr>
+      <tr><td class="k">Havaintokerros</td><td>Puuttuu: kartta piirtää kaiken minkä tietää</td><td>Kolmikerroksinen canvas, vanhentuneisuushaalennus</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout">
+    <p><strong>Realismivalidointiportti.</strong> Sama portti kuin polttoaineparametreilla: kolme
+    kokenutta kaistanjohtajaa, yksi kysymys — <em class="q">voisiko tämä olla peruskarttalehti, ja
+    voisiko palo käyttäytyä näin tällä maastolla?</em> Sen lisäksi konetarkistukset joka leivonnalla:
+    harjun reliefi ≥ +18 m, linjan solut 100–110 m, kohde linjan eteläpuolella 0,7–1,1 km,
+    nolla tie- tai rakennussolua vedessä.</p>
+  </div>
+ </div>
+</section>
+
+<section id="mittaus">
+ <div class="wrap">
+  <div class="shead"><span class="snum">07</span><h2>Mittaus ja lokitus</h2></div>
+  <p class="dek">Instrumentti ei kirjoita mittaustuloksia. Se kirjoittaa tapahtumia, ja jokainen
+  analyysin muuttuja johdetaan niistä skriptillä. Uusinta on mahdollinen, muuttujan määritelmä voidaan
+  vaihtaa jälkikäteen ilman uutta aineistonkeruuta, ja loki on auditoitavissa.</p>
+
+  <h4>Otsikkomittarit ja niiden johtaminen</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Muuttuja</th><th>Johtaminen tapahtumista</th></tr></thead>
+    <tbody>
+      <tr><td class="k">detection_latency_s</td><td>Ensimmäinen itään, KILOon tai säähän kohdistuva kysely tai radiovihjeen jälkeinen toiminta, mitattuna taaksepäin hetkestä 0:48</td></tr>
+      <tr><td class="k">precursor_route</td><td>kysely · radio · ei havaintoa. Havaintoviive raportoidaan reitin mukaan ehdollistettuna — muuten ajoituksen tuuri sekoittuu mittariin</td></tr>
+      <tr><td class="k">adaptation_latency_dp</td><td>Päätöspisteitä S08:sta ensimmäiseen kalibroituun poikkeamaan</td></tr>
+      <tr><td class="k">requery_interval_s</td><td>Mediaani simuloitu aika samaa aihetta koskevien kyselyjen välillä. <strong>Korvaa kyselymäärän</strong> tiedonhaun otsikkomittarina</td></tr>
+      <tr><td class="k">stale_belief_flag</td><td>Osallistuja toimii tiedolla, joka haettiin ennen sen korvaamista</td></tr>
+      <tr><td class="k">comparable_query_count</td><td>Vain kentät, jotka molemmilla ehdoilla on. H2.3 ajetaan vain tällä, muuten vertailu on kehämäinen</td></tr>
+      <tr><td class="k">time_remaining_at_commit</td><td>Countdown-tilasta commitin hetkellä — erottaa varhaisen päättäjän takarajapäättäjästä</td></tr>
+      <tr><td class="k">non_decision</td><td>Oletussääntö laukesi. <strong>Ei puuttuva arvo</strong> vaan oma rivinsä syineen</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Kaksi asiaa, jotka on ratkaistava koodissa eikä analyysissa</h3>
+  <p><strong>Sokkokoodaus on rakennusvaatimus.</strong> Koodaaja ei saa päätellä haaraa: ohjauspaneelin
+  sanamuoto normalisoidaan, estetyt optiot renderöidään kuten estämättömät, kyselylokista poistetaan
+  perustelu- ja luottamuskentät. Tämä unohtuu helposti ja huomataan vasta kun koodaus on tehty ja
+  pilattu — siksi siitä on automaattitesti, joka vertaa saman päätöksen uusintaa molemmista haaroista.</p>
+  <p><strong>Istunto ei saa hävitä.</strong> 157 minuuttia kurssikohortista rekrytoidun osallistujan
+  aikaa on kalleinta mitä tässä projektissa voi menettää. Append-only jono IndexedDB:hen, tilannekuva
+  30 sekunnin välein, lataus hash-varmennuksella. Testi: katkaise verkko kesken istunnon, jatka 20
+  minuuttia, palauta verkko — nolla hävinnyttä tapahtumaa, nolla duplikaattia.</p>
+ </div>
+</section>
+
+<section id="vaiheet">
+ <div class="wrap">
+  <div class="shead"><span class="snum">08</span><h2>Vaiheet, riskit ja se mitä sinun pitää päättää</h2></div>
+  <p class="dek">Vaihe 1 ei sisällä yhtään manipulaatiota. Jos kello, maailma ja loki eivät ole
+  deterministisiä ja täydellisiä, mikään vaiheen 2 asia ei ole mitattavaa — se vain näyttää siltä.</p>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="pn">Vaihe 1</div><h5>Ajettava tapahtuma</h5><div class="wk">≈ 8 viikkoa</div>
+      <ul>
+        <li>Skenaariomoottori — täysi ajo kahdesti identtisesti, hashit täsmäävät</li>
+        <li>Kaksikerroksinen maailma + havaintoportti</li>
+        <li>Maastoputki, molemmat mittakaavat</li>
+        <li>Päätöspalkki + countdown</li>
+        <li>Oletustoimintamoottori — nollasyötteen ajo tuottaa 15 ei-päätöstä</li>
+        <li>Aikaindeksoitu korpus</li>
+        <li>Lokitus + verkkokatkon kestävä lataus</li>
+        <li><strong>Sisältövalidaattori CI:ssä</strong></li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="pn">Vaihe 2</div><h5>Manipulaatiot ja mittarit</h5><div class="wk">≈ 8 viikkoa</div>
+      <ul>
+        <li>Kyselyrakentaja + vapaa teksti</li>
+        <li>Ehtoportti A / B, vuototestattuna</li>
+        <li>Ohjauskerros, estot ja kitkallinen ohitus</li>
+        <li>Uncued-käsittely S06 ja S08</li>
+        <li>SPAM + kolme jäädytystä, kanavat todistettavasti lukossa</li>
+        <li>Projektio-oraakkeli tason 3 rehelliseen pisteytykseen</li>
+        <li>Vastausten aikaleimaus ilman yhtään ilmoitusta</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="pn">Vaihe 3</div><h5>Tutkijan työkalut</h5><div class="wk">≈ 4 viikkoa</div>
+      <ul>
+        <li>Tutkijakonsoli: käynnistä, tauko, merkitse, keskeytä</li>
+        <li>Uusinta ja sokkokoodausnäkymä</li>
+        <li>Vienti + manifest (sisältö-, skeema- ja karttaversio)</li>
+        <li>Harjoitustapahtuma omana sisältöpakettinaan</li>
+        <li>Loppukysely ja alueen tunnistamisosio</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Kuusi testiä, joita tavallinen sovellus ei joudu läpäisemään</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Testi</th><th>Miten</th><th>Miksi</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Determinismi</td><td>Aja ydin headlessina 100× samalla siemenellä, vertaa tapahtumavirran hashia</td><td>Ilman tätä ehtojen keskiarvot eivät ole vertailukelpoisia</td></tr>
+      <tr><td class="k">Kultainen ajo</td><td>Tallennettu syötesarja + odotettu tapahtumavirta versionhallinnassa</td><td>Havaitsee, jos sisältömuutos muuttaa vahingossa toista pistettä</td></tr>
+      <tr><td class="k">Nollasyöte</td><td>Ajo ilman yhtään syötettä</td><td>Todistaa, että oletustoiminta kattaa kaikki 15 pistettä</td></tr>
+      <tr><td class="k">Vuoto</td><td>Greppaa verkkoliikenne ja <code>window</code>-puu totuuskerroksen tunnisteiden varalta</td><td>Manipulaation eheys</td></tr>
+      <tr><td class="k">Sokko</td><td>Generoi uusinta molemmista haaroista samalle päätökselle, diffaa</td><td>Sokkokoodauksen kelpoisuus</td></tr>
+      <tr><td class="k">Aikajana</td><td>Validaattorin säännöt jokaisella buildilla</td><td>Estää välilehtien eriytymisen</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Kolme riskiä, jotka arkkitehtuuri kantaa — ja kolme, joita se ei</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Riski</th><th>Vastaus</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Sisällön eriytyminen</td><td>Validaattori vaiheessa 1, CI:ssä, buildin pysäyttävänä</td></tr>
+      <tr><td class="k">Istunnon menetys tekniseen vikaan</td><td>Append-only jono, 30 s tilannekuva, offline-first, palautus</td></tr>
+      <tr><td class="k">Ominaisuuden hiipiminen (uusi <em class="q">avulias</em> ilmoitus)</td><td>Säännöt R4, R5, R6 ja R13 automaattitesteinä; ilmoitukset kiellettyjä oletuksena</td></tr>
+      <tr><td class="k">Rekrytointi: 136 kaistanjohtajaa</td><td><strong>Ei arkkitehtuurin ratkaistavissa.</strong> Vahvista kohorttikoot ennen neljään soluun sitoutumista; varamalli on kaksi haaraa</td></tr>
+      <tr><td class="k">Päätöksen laadun reliabiliteetti</td><td><strong>Ei arkkitehtuurin ratkaistavissa.</strong> Esirekisteröity varasuunnitelma: pudota ensisijaisista jos ICC &lt; 0,60</td></tr>
+      <tr><td class="k">Sisältötyö myöhästyy</td><td><strong>Osittain.</strong> Sisältö on dataa eikä koodia, joten se voi valmistua rinnalla — mutta laatuankkureiden läpimenoaikaa ei voi lyhentää</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Päätökset, jotka estävät rakentamisen</h3>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Kysymys</th><th>Suositus</th></tr></thead>
+    <tbody>
+      <tr><td class="k">T-1</td><td>XVR vai erillinen selaininstrumentti?</td><td><strong>Erillinen instrumentti.</strong> Yksikään mittausvaatimus ei ole XVR:n kautta luotettavasti toteutettavissa, eikä 3D-immersio ole mittarin kannalta tarpeen. Jos XVR on institutionaalisesti pakollinen, käytä sitä vain harjoituslohkossa</td></tr>
+      <tr><td class="k">T-2</td><td>Kaistanjohtajat, yksikönjohtajat vai molemmat?</td><td><strong>Kaistanjohtaja.</strong> Koko maailma on rakennettu sille tasolle; kahden echelonin sekoittaminen tuo varianssia jota ei voi mallintaa</td></tr>
+      <tr><td class="k">T-4</td><td>Milloin armeijapaketti aloitetaan?</td><td>Uhkamallin <strong>rajapinta vaiheessa 1</strong> joka tapauksessa. Sisältö vasta pelastusdomainin pilotin jälkeen. Rajapinnan jättäminen tekemättä maksaa myöhemmin uuden projektin verran</td></tr>
+      <tr><td class="k">T-6</td><td>Hyväksytäänkö kuuden ristiriidan korjaukset?</td><td>Korjaa kaikki <strong>ennen</strong> sisällön kirjoittamista. Aikajanan siirtäminen maksaa nyt tunnin ja pilotin jälkeen viikon</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Ensimmäiset kaksi viikkoa</h3>
+  <ol>
+    <li><strong>Päätä T-1.</strong> Kaikki muu riippuu siitä.</li>
+    <li><strong>Korjaa aikajana</strong> (V-2, V-4, V-5) ja poista kolmen haaran termistö (V-1). Yksi iltapäivä, sinun työtäsi.</li>
+    <li><strong>Ota yhteys käytännön asiantuntijoihin.</strong> Pisin läpimenoaika koko projektissa.</li>
+    <li><strong>Pystytä sisältöputki:</strong> Excel → YAML → validaattori → CI. Ensimmäinen ajo saa olla punainen — se on todiste siitä, että se toimii.</li>
+    <li><strong>Leivo maasto</strong> prototyypin funktioista ja aja konetarkistukset.</li>
+    <li><strong>Kirjoita S05, S09 ja S10 kokonaan.</strong> Ohjauskonflikti, ensisijainen häiriönjälkeinen piste ja tyhjä sektori kattavat kaikki mekanismit. Jos ne toimivat, loput on toistoa.</li>
+  </ol>
+ </div>
+</section>
+
+<footer>
+ <div class="wrap">
+  <p>Lähteet: PhD_Simulation_Scenarios_P2P3_1.xlsx (30 välilehteä, 21.8.2026) ja harjulakartta.html
+  (siemen 20260821). Maastogeneraattorin suorituskykyluku mitattu irrottamalla kenttäfunktiot Nodeen:
+  470 × 470 luokitusruudukko 1,54 s.</p>
+  <p>Kaikki paikannimet ja organisaatiot ovat kuvitteellisia. Suunnitelmadokumentit kokonaisuudessaan:
+  hakemisto <code>pelastussimulaatio/</code>.</p>
+ </div>
+</footer>
+
