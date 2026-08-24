@@ -1,8 +1,8 @@
 # Reconciliation: implementation guide against the prior plan
 
-The implementation guide (August 2026) and the prior build plan disagree in twenty-eight places.
-This document lists every one of them with a verdict, so that no disagreement is settled silently
-in code.
+The implementation guide (August 2026) and the prior build plan disagree in **twenty-eight places**
+(D-01 to D-28), and the guide leaves **five questions open** (X-01 to X-05) that had to be ruled on.
+This document lists every one with a verdict, so that no disagreement is settled silently in code.
 
 Three verdicts are used:
 
