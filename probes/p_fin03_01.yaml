@@ -1,0 +1,11 @@
+id: p_fin03_01
+level: 3
+type: multiple_choice
+prompt: "Where do you estimate the enemy detachment will be in 30 minutes?"
+options:
+  A: "still east of the lake"
+  B: "on the northern lateral"
+  C: "west of the lake, closing on KELO"
+  D: "no basis to judge"
+correct: C
+confidence_scale: 4

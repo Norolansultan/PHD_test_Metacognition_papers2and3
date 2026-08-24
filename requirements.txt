@@ -1,0 +1,7 @@
+# Engine and harness
+PyYAML>=6.0
+
+# Tests
+pytest>=8.0
+
+# Analysis (HMeta-d itself is R; see analysis/README.md)
