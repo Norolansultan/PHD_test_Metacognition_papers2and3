@@ -25,7 +25,7 @@ from engine.errors import Injector
 from engine.eventlog import EventLog
 from engine.intents import IntentParser
 from engine.query import ConditionConfig, QueryEngine
-from engine.world import TICK_S, step, with_waypoint
+from engine.world import TICK_S, step, with_route
 
 
 def load_participant(path: str) -> dict:
@@ -129,9 +129,12 @@ def run(scenario_path: str, participant_path: str, out_path: str, root: str = ".
             elif kind == "decision":
                 log.write(t, "decision", action=a["action"], axis=a.get("axis"),
                           unit=a.get("unit"))
-                if a.get("unit") and a.get("target"):
-                    world = with_waypoint(world, a["unit"],
-                                          (float(a["target"][0]), float(a["target"][1])))
+                if a.get("unit") and a.get("route"):
+                    world = with_route(world, a["unit"],
+                                       [(float(p[0]), float(p[1])) for p in a["route"]])
+                elif a.get("unit") and a.get("target"):
+                    world = with_route(world, a["unit"],
+                                       [(float(a["target"][0]), float(a["target"][1]))])
             elif kind == "decision_revert":
                 log.write(t, "decision_revert", reverts=a.get("reverts"))
 

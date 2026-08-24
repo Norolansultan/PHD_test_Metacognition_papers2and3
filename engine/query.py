@@ -29,10 +29,11 @@ from engine.world import WorldState
 
 KELO = (4150.0, 7550.0)
 # The forced branch: two routes to the same objective, joined by the northern
-# lateral, separated by the lake. Neither is choosable on the available
+# lateral, separated by the lake. West is short, fast and exposed; east is long,
+# slow and covered. Neither dominates, so neither is choosable on the available
 # information without asking (ADR-010, docs/studies/study-i-army.md).
-ROUTE_WEST = [(2050.0, 3050.0), (2050.0, 7550.0), KELO]
-ROUTE_EAST = [(6250.0, 3050.0), (6250.0, 7550.0), KELO]
+ROUTE_WEST = [(2850.0, 3050.0), (2850.0, 7550.0), KELO]
+ROUTE_EAST = [(7050.0, 3050.0), (7050.0, 7550.0), KELO]
 DIRECTION_VECTOR = {"north": (0.0, -1.0), "south": (0.0, 1.0),
                     "east": (1.0, 0.0), "west": (-1.0, 0.0)}
 

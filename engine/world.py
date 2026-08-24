@@ -20,6 +20,7 @@ TICK_S = 30  # scenario seconds per step
 # Movement speed in m/s by terrain class, for a ground unit.
 SPEED_BY_TERRAIN = {
     "road": 11.0,
+    "track": 4.5,
     "open": 4.0,
     "urban": 3.0,
     "forest": 1.6,
@@ -48,6 +49,7 @@ class Entity:
     supply: float = 1.0
     status: str = "static"  # "moving" | "engaged" | "static" | "destroyed"
     waypoint: tuple[float, float] | None = None
+    route: tuple[tuple[float, float], ...] = ()  # legs still to run after waypoint
     endurance_s: int | None = None  # air only; None means not an air platform
 
 
@@ -83,6 +85,9 @@ def _advance(e: Entity, terrain: TerrainGrid, dt: int) -> Entity:
         return e
     d = distance(e.pos, e.waypoint)
     if d < 1.0:
+        # Leg complete. Take the next one, or stop.
+        if e.route:
+            return replace(e, waypoint=e.route[0], route=e.route[1:], status="moving")
         return replace(e, waypoint=None, status="static", speed=0.0)
     v = terrain_speed(e, terrain, e.pos)
     if v <= 0.0:
@@ -134,7 +139,20 @@ def step(state: WorldState, rng: Random, dt: int = TICK_S) -> WorldState:
 
 
 def with_waypoint(state: WorldState, eid: str, wp: tuple[float, float]) -> WorldState:
+    return with_route(state, eid, [wp])
+
+
+def with_route(state: WorldState, eid: str, legs: list[tuple[float, float]]) -> WorldState:
+    """Order a unit along a sequence of waypoints.
+
+    A single waypoint is a straight line, and a straight line to the objective
+    runs into the lake. A corridor is a route, so ordering one has to be a route
+    as well, or neither branch is executable.
+    """
+    if not legs:
+        return state
     e = state.entities[eid]
     ents = dict(state.entities)
-    ents[eid] = replace(e, waypoint=wp, status="moving")
+    ents[eid] = replace(e, waypoint=tuple(legs[0]),
+                        route=tuple(tuple(x) for x in legs[1:]), status="moving")
     return replace(state, entities=ents)

@@ -12,8 +12,8 @@ Tracked against [build-order.md](build-order.md). Updated when a step's definiti
 | **5 · GATE — expert validation** | **BLOCKED** | Requires practitioner advisors. Nothing downstream is validated until this passes |
 | 6 · Logging + replay + headless harness | **done** | `tests/test_replay.py` reproduces a session from its log alone |
 | 7 · Intent parsing | **partial** | Rule tier and cache built; the model fallback waits for a real question corpus, per ADR-005 |
-| 8 · Frontend | not started | The session viewer is a replay surface, not the participant interface |
-| 9 · Freeze, blanking, probes, ISA | **partial** | Probe and ISA events are logged by the harness; blanking and freeze mechanics need the frontend |
+| 8 · Frontend | **done** | `web/` draws from the belief layer the API sends; `api/` is a thin layer over the engine. `tools/e2e_check.py` drives a real browser against a real server |
+| 9 · Freeze, blanking, probes, ISA | **done** | The clock stops, the display is blanked, the channel refuses and logs the refusal, and the probe carries confidence and ISA before it closes — `tests/test_api.py` |
 | 10 · Error injection | **done** | `tests/test_injection.py`; `tests/test_exposure_route.py` covers the radio fallback |
 | 11 · Demo mode | **done** for replay | `tools/make_viewer.py` produces the debug panel over real logs |
 | 12-13 · Pilots | not started | Blocked by step 5 |
@@ -45,6 +45,27 @@ Recorded because they are the kind that would have survived into collection.
 | B-4 | Exposure was measured from the cell under the unit, so a road through open ground read as covered | The risk half of the route trade-off would have been identically zero for both routes |
 | B-5 | Units walked into the lake, because passability was checked at the current position rather than the next one | The lake would not have separated the corridors, and the forced branch would not have been forced |
 | B-6 | The two corridors were not comparable in cost (89 min against 204 min) | The branch would have been choosable on distance alone, and exposure to the pulled channel would have been self-selected — the failure K-6 exists to prevent |
+| B-7 | The scenario ran 45 minutes while the measurement documents specify a 60-90 minute session, and one corridor took longer than the whole run | A route the participant cannot finish is not a decision they can make |
+| B-8 | A unit could only be ordered to a single waypoint, so a corridor order drove it straight into the lake and it stopped | **Neither branch of the forced choice would have been executable.** The participant could see the trade-off, ask about it, decide — and then watch the platoon stop at the shore |
 
 B-6 was found by the experimental-design gate in `tests/test_terrain.py`, which is the reason that
 gate is a test rather than a paragraph.
+
+## Design change: the branch criterion
+
+The first fix for B-6 made the two corridors cost the same, on the reasoning that equal cost forces
+the question. That criterion is weaker than it looks: it makes the corridors interchangeable and the
+decision arbitrary, and a participant can pick either one without loss.
+
+The criterion is now **non-dominance**: the faster route must also be the more exposed one, and both
+must be completable inside the session. The choice is then the trade-off a commander actually faces
+— speed against cover — and it cannot be resolved without knowing the risk, which is the half that
+is only visible if they ask.
+
+| Corridor | Time | Route in open ground |
+|---|---|---|
+| West — road across open ground | 37 min | 100 % |
+| East — track under forest | 85 min | 19 % |
+
+Session length is 90 minutes, matching [docs/measurement](../measurement/README.md). Both routes fit
+inside it; the slow one only just, which is itself part of the decision.

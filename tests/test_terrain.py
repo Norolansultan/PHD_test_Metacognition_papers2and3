@@ -15,8 +15,8 @@ from engine.projection import whatif_route
 from engine.query import ROUTE_EAST, ROUTE_WEST
 from engine.scenario import load
 
-MAX_TIME_DIFFERENCE = 0.35   # routes must be comparable in cost
-MIN_RISK_DIFFERENCE = 0.20   # and must differ in risk
+MAX_ROUTE_S = 5400           # a route must be completable inside the session
+MIN_RISK_DIFFERENCE = 0.20   # the two routes must differ in risk
 
 
 def _routes():
@@ -26,12 +26,31 @@ def _routes():
     return w, e
 
 
-def test_the_branch_is_forced_neither_route_is_cheaper():
+def test_both_routes_fit_inside_the_session():
     w, e = _routes()
     assert w.reachable and e.reachable
-    diff = abs(w.eta_s - e.eta_s) / max(w.eta_s, e.eta_s)
-    assert diff <= MAX_TIME_DIFFERENCE, (
-        f"routes differ by {diff:.0%} in time: the branch is choosable on cost alone"
+    for name, o in (("west", w), ("east", e)):
+        assert o.eta_s <= MAX_ROUTE_S, (
+            f"{name} route takes {o.eta_s // 60} min, longer than the {MAX_ROUTE_S // 60} "
+            "minute session: a decision the participant cannot execute is not a decision"
+        )
+
+
+def test_neither_route_dominates_the_other():
+    """The branch is forced by a trade-off, not by symmetry.
+
+    An earlier version required the two routes to cost the same. That is one way
+    to force the choice, but a weaker one: it makes the corridors interchangeable
+    and the decision arbitrary. Requiring that the faster route is also the more
+    exposed one is the stronger criterion, because it is the trade-off a commander
+    actually faces, and it cannot be resolved without knowing the risk.
+    """
+    w, e = _routes()
+    faster = "west" if w.eta_s < e.eta_s else "east"
+    safer = "west" if w.exposed_fraction < e.exposed_fraction else "east"
+    assert faster != safer, (
+        f"the {faster} route is both faster and safer: it dominates, so the "
+        "branch is choosable without asking anything"
     )
 
 

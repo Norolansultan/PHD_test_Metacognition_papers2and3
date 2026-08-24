@@ -140,7 +140,8 @@ def whatif_route(
     e = state.entities[unit_id]
     if e.side != "blue":
         raise ValueError("whatif_route is for own-side units only")
-    sim = replace(state, entities={unit_id: replace(e, waypoint=waypoints[0], status="moving")})
+    sim = replace(state, entities={unit_id: replace(e, waypoint=waypoints[0], route=(),
+                                                    status="moving")})
     rng = Random(state.seed)
     leg = 0
     ticks = 0
@@ -157,8 +158,8 @@ def whatif_route(
                 break
             sim = replace(
                 sim,
-                entities={unit_id: replace(sim.entities[unit_id],
-                                           waypoint=waypoints[leg], status="moving")},
+                entities={unit_id: replace(sim.entities[unit_id], waypoint=waypoints[leg],
+                                           route=(), status="moving")},
             )
     done = leg >= len(waypoints)
     return ProjectionOutcome(

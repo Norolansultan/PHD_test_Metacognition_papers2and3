@@ -113,11 +113,13 @@ pytest and produces the same result every time. Everything else is replaceable.
 ## Getting started
 
 ```bash
-make setup      # PyYAML and pytest
-make test       # 22 tests, including determinism, replay and the omniscience test
+make setup      # PyYAML, FastAPI, pytest
+make test       # 28 tests, including determinism, replay and the omniscience test
 make terrain    # regenerate the fictional terrain raster
 make run        # run the scenario headless with two scripted participants
 make viewer     # build the data for the session viewer
+make api        # serve the participant display on :8000
+make e2e        # drive a real browser against it and check the log
 make demo       # all of the above, from a clean checkout
 ```
 
@@ -140,7 +142,9 @@ downstream of it is validated until it passes. Progress and the defects found wh
 | `engine/eventlog.py` — append-only JSONL with engine and schema versions | done |
 | `harness/run.py`, `harness/replay.py` — headless runs and replay from log | done |
 | `scenarios/`, `probes/` — one scenario, two probes, fictional terrain | done |
-| Participant frontend, freeze and blanking | not started |
+| `api/` — FastAPI over the engine, session state, freeze semantics | done |
+| `web/` — participant display: belief-layer map, query, freeze and blanking | done |
+| `tools/e2e_check.py` — a real browser against a real server | done |
 
 ## Status
 

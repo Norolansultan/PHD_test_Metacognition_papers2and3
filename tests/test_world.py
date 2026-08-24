@@ -41,3 +41,24 @@ def test_units_move_at_different_speeds_by_kind():
     from engine.world import MOBILITY
 
     assert MOBILITY["infantry_platoon"] < MOBILITY["mech_company"]
+
+
+def test_a_unit_can_be_ordered_along_a_corridor():
+    """A single waypoint runs into the lake; a corridor has to be a route.
+
+    Without this, neither branch of the forced choice is executable, and the
+    decision the study measures cannot be carried out.
+    """
+    from engine.world import with_route
+
+    s = load("scenarios/fin-def-03.yaml", root=".")
+    rng = Random(s.seed)
+    west = [(2850.0, 3050.0), (2850.0, 7550.0), (4150.0, 7550.0)]
+    world = with_route(s.initial, "blue_1pl", west)
+    while world.t < s.duration_s:
+        world = step(world, rng)
+        assert world.entities["blue_1pl"].status != "blocked"
+    end = world.entities["blue_1pl"].pos
+    assert abs(end[0] - 4150.0) < 60 and abs(end[1] - 7550.0) < 60, (
+        f"the platoon did not reach KELO by the western corridor: {end}"
+    )

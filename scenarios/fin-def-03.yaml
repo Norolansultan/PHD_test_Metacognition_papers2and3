@@ -1,7 +1,7 @@
 id: fin-def-03
 version: 1
 seed: 88421
-duration_s: 2700
+duration_s: 5400
 domain: land
 echelon: company            # PROVISIONAL - blocked decision A-1
 notes: >
@@ -14,7 +14,7 @@ notes: >
 terrain:
   file: scenarios/terrain/valley_a.png
   cell_m: 100
-  legend: {0: open, 1: forest, 2: water, 3: road, 4: urban}
+  legend: {0: open, 1: forest, 2: water, 3: road, 4: urban, 5: track}
 
 weather:
   wind_dir_deg: 210
@@ -25,13 +25,13 @@ entities:
   # blue_1pl sits on the junction of the northern lateral: both corridors are
   # equally available from here, which is what makes the branch forced.
   - {id: blue_1pl,     side: blue, kind: infantry_platoon, pos: [4150, 3050], strength: 1.0}
-  - {id: blue_2pl,     side: blue, kind: infantry_platoon, pos: [6250, 3050], strength: 1.0}
-  - {id: blue_drone_a, side: blue, kind: drone, pos: [4150, 2600], endurance_s: 1500,
-     waypoint: [6400, 5400]}
+  - {id: blue_2pl,     side: blue, kind: infantry_platoon, pos: [7050, 3050], strength: 1.0}
+  - {id: blue_drone_a, side: blue, kind: drone, pos: [4150, 2600], endurance_s: 2400,
+     waypoint: [7400, 5400]}
   # Red approaches KELO down the eastern corridor: the lake blocks a direct line,
   # which is why the corridors exist at all.
-  - {id: red_coy_x,    side: red,  kind: mech_company, pos: [7900, 4200], strength: 0.9,
-     waypoint: [6250, 7550]}
+  - {id: red_coy_x,    side: red,  kind: mech_company, pos: [8300, 3600], strength: 0.9,
+     waypoint: [7050, 7550]}
 
 sensors:
   - {entity: blue_drone_a, range_m: 3000, pos_error_m:  50, interval_s:  60}
@@ -40,7 +40,7 @@ sensors:
 
 order:
   ref: vague_order
-  issued_t: 1200
+  issued_t: 2400
   text: "Forces withdraw. Move to area KELO."
   identical_all_conditions: true
   true_reading: >
@@ -50,13 +50,13 @@ order:
   distorted_readings:
     north: >
       KELO is the built-up area on the southern lateral. The order requires
-      disengagement and movement there by the western corridor. The eastern
+      disengagement and movement there by the eastern corridor. The western
       corridor is not consistent with the intent.
   required_by_order: rules/kelo_withdrawal.yaml
-  fallback_at_t: 1800        # radio fallback if no order_interpretation query (X-02)
+  fallback_at_t: 3000        # radio fallback if no order_interpretation query (X-02)
 
 events:
-  - t: 600
+  - t: 1200
     type: radio_message
     from: adjacent_bn
     text: "Enemy detachment observed at grid 78-52, moving west."
@@ -66,15 +66,15 @@ events:
       pos_error: 400
       confidence: 0.7
 
-  - t: 1500
+  - t: 3300
     type: radio_message
     from: blue_2pl
     text: "Movement to our north-west, unclear composition."
 
 probes:
-  - {t:  900, ref: p_fin03_01}
-  - {t: 2100, ref: p_fin03_02, open_l3: true}
+  - {t: 1800, ref: p_fin03_01}
+  - {t: 4200, ref: p_fin03_02, open_l3: true}
 
 injections:
-  - {id: inj_gd_01, after_t: 1200, type: guidance_distortion, direction: north,
+  - {id: inj_gd_01, after_t: 2400, type: guidance_distortion, direction: north,
      magnitude: medium}

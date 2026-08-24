@@ -9,13 +9,13 @@ it must be publishable as an appendix.
 id: fin-def-03
 version: 3
 seed: 88421
-duration_s: 2700
+duration_s: 5400            # the session length the measurement docs specify
 domain: land
 
 terrain:
   file: terrain/valley_a.png     # fictional terrain
   cell_m: 100
-  legend: {0: open, 1: forest, 2: water, 3: road, 4: urban}
+  legend: {0: open, 1: forest, 2: water, 3: road, 4: urban, 5: track}
 
 entities:
   - {id: blue_1pl,     side: blue, kind: infantry_platoon, pos: [4200, 3100], strength: 1.0}
@@ -108,7 +108,7 @@ The validator runs on every build. A failure stops the build.
 | V-06 | `projection_error` and `guidance_distortion` never share a trial | Confounding reliability with integrity |
 | V-07 | Injection proportions approximately 55 / 20 / 20 / 0 across the scenario | Proportion drift |
 | V-08 | Distortion direction systematic within a scenario, balanced across scenarios | The manipulation being visible in its structure |
-| V-09 | At least one forced branch point before guidance arrives | Self-selected exposure |
+| V-09 | At least one forced branch point before guidance arrives, and **neither of its options dominates**: the faster route must also be the more exposed one, and both must be completable inside the session | Self-selected exposure, and a branch that can be resolved without asking |
 | V-10 | A radio fallback is defined for every pulled guidance | An exposure gap |
 | V-11 | `required_by_order` exists for every drift-measuring point, or the point is marked as non-drift | Unmeasurable drift |
 | V-12 | Study II: projections about the rear ground return at most N results before point 10 | The empty sector being quietly filled |

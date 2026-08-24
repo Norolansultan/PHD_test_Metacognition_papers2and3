@@ -1,4 +1,4 @@
-.PHONY: setup test run replay terrain viewer demo clean
+.PHONY: setup test run replay terrain viewer api e2e demo clean
 
 PY ?= python3
 SCENARIO ?= scenarios/fin-def-03.yaml
@@ -23,6 +23,13 @@ replay:
 
 viewer: run
 	$(PY) tools/make_viewer.py logs/viewer-data.json
+
+api:
+	$(PY) -m uvicorn api.main:app --port 8000 --reload
+
+# End to end: a real browser against a real server. Start the API first.
+e2e:
+	$(PY) tools/e2e_check.py
 
 # Everything from a clean checkout, in the order the build order specifies.
 demo: setup terrain test run viewer
