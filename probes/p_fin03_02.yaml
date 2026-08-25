@@ -1,0 +1,7 @@
+id: p_fin03_02
+level: 3
+type: open
+prompt: "What do you expect to happen in the next 30 minutes, and why?"
+open_l3: true
+time_limit_s: 60
+confidence_scale: 4

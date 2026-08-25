@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Division display</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230F1419'/%3E%3Ccircle cx='8' cy='8' r='4' fill='none' stroke='%23FF7B5C'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+
+<div id="gate">
+  <h1 style="margin:0;font-size:22px">Division display</h1>
+  <p style="max-width:44ch;color:#8E9AA6;margin:0">
+    The display runs full screen. Leaving full screen is recorded.
+  </p>
+  <button class="primary" id="begin">Begin</button>
+</div>
+
+<div id="toosmall">
+  <p style="max-width:40ch">This display needs a window at least 1000 &times; 640. Enlarge the
+  window and reload.</p>
+</div>
+
+<div id="app">
+  <header>
+    <span class="clock" id="clock">0:00</span>
+    <span class="id" id="who"></span>
+    <span style="flex:1"></span>
+    <button id="finish">End session</button>
+  </header>
+  <main>
+    <div id="mapwrap"><canvas id="map" width="900" height="900"></canvas></div>
+    <aside>
+      <section>
+        <h2>Ask</h2>
+        <input type="text" id="q" placeholder="type a question and press enter" autocomplete="off">
+        <div id="answer" class="waiting" style="margin-top:10px">&mdash;</div>
+      </section>
+      <section id="radio"><h2>Net</h2><div id="msgs"></div></section>
+      <section>
+        <h2>Own units</h2>
+        <div class="units" id="units"></div>
+        <div class="scale" style="margin-top:10px">
+          <button data-move="west">Move west corridor</button>
+          <button data-move="east">Move east corridor</button>
+        </div>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<div id="freeze"><div class="box" id="freezebox"></div></div>
+
+<script src="app.js"></script>

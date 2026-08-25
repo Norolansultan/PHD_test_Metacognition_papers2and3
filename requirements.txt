@@ -1,0 +1,12 @@
+# Engine and harness
+PyYAML>=6.0
+
+# API and frontend delivery
+fastapi>=0.110
+uvicorn>=0.29
+
+# Tests
+pytest>=8.0
+playwright>=1.40   # end-to-end check only
+
+# Analysis (HMeta-d itself is R; see analysis/README.md)

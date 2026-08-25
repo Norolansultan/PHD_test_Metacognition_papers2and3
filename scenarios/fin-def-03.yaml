@@ -1,0 +1,98 @@
+id: fin-def-03
+version: 1
+seed: 88421
+duration_s: 5400
+domain: land
+echelon: company            # PROVISIONAL - blocked decision A-1
+notes: >
+  Study I demonstration scenario. Phase 1 runs on bottom-up reporting only; the
+  vague order arrives at t=1200 and phase 2 is the interpretation of it. The
+  terrain carries the forced branch point: the lake and stream split the advance
+  into a west road corridor and an east forest track with comparable predicted
+  cost, and neither can be chosen on the information available without asking.
+
+terrain:
+  file: scenarios/terrain/valley_a.png
+  cell_m: 100
+  legend: {0: open, 1: forest, 2: water, 3: road, 4: urban, 5: track}
+
+weather:
+  wind_dir_deg: 210
+  wind_ms: 4.0
+  visibility_m: 8000
+  temp_c: 3
+  precipitation: none
+
+# Scheduled weather. The picture must keep changing even where nothing is firing.
+weather_changes:
+  - {t: 1500, wind_dir_deg: 235, wind_ms: 6.0, visibility_m: 5500, temp_c: 2,
+     precipitation: rain}
+  - {t: 3600, wind_dir_deg: 260, wind_ms: 8.0, visibility_m: 3200, temp_c: 1,
+     precipitation: rain}
+
+entities:
+  # blue_1pl sits on the junction of the northern lateral: both corridors are
+  # equally available from here, which is what makes the branch forced.
+  - {id: blue_1pl,     side: blue, kind: infantry_platoon, pos: [4150, 3050], strength: 1.0}
+  # blue_2pl is the covering force on the eastern flank. It meets the advance
+  # first, and it is outranged: a mech company reaches 2200 m, a platoon 900 m.
+  - {id: blue_2pl,     side: blue, kind: infantry_platoon, pos: [6300, 3050], strength: 1.0}
+  - {id: blue_drone_a, side: blue, kind: drone, pos: [4150, 2600], endurance_s: 2400,
+     waypoint: [7600, 3200]}
+  # Red advances west along the northern lateral, presses the junction, and then
+  # turns south down the WESTERN corridor. That is what makes the fast route
+  # genuinely dangerous rather than abstractly exposed, and it is what the
+  # withdrawal order is a response to.
+  - {id: red_coy_x,    side: red,  kind: mech_company, pos: [8500, 3050], strength: 0.9,
+     route: [[6000, 3050], [2850, 3050], [2850, 7550], [4150, 7550]]}
+  # A reconnaissance element probing the eastern corridor. It arrives later and
+  # gives the situation a second axis, so the picture is never resolved into one
+  # line of contact.
+  - {id: red_recon_1,  side: red,  kind: recon_troop, pos: [8600, 4600], strength: 0.7,
+     route: [[7050, 4600], [7050, 6800], [5200, 7550]]}
+
+sensors:
+  - {entity: blue_drone_a, range_m: 3000, pos_error_m:  50, interval_s:  60}
+  - {entity: blue_1pl,     range_m:  800, pos_error_m: 200, interval_s: 300}
+  - {entity: blue_2pl,     range_m:  800, pos_error_m: 200, interval_s: 300}
+
+order:
+  ref: vague_order
+  issued_t: 2400
+  text: "Forces withdraw. Move to area KELO."
+  identical_all_conditions: true
+  true_reading: >
+    KELO is the built-up area on the southern lateral. The order requires
+    disengagement and movement there. It does not specify a route; the west and
+    east corridors both satisfy it, and the choice is the commander's.
+  distorted_readings:
+    north: >
+      KELO is the built-up area on the southern lateral. The order requires
+      disengagement and movement there by the eastern corridor. The western
+      corridor is not consistent with the intent.
+  required_by_order: rules/kelo_withdrawal.yaml
+  fallback_at_t: 3000        # radio fallback if no order_interpretation query (X-02)
+
+events:
+  - t: 1200
+    type: radio_message
+    from: adjacent_bn
+    text: "Enemy detachment observed at grid 78-52, moving west."
+    creates_observation:
+      subject: red_coy_x
+      pos: [7800, 5200]
+      pos_error: 400
+      confidence: 0.7
+
+  - t: 3300
+    type: radio_message
+    from: blue_2pl
+    text: "Movement to our north-west, unclear composition."
+
+probes:
+  - {t: 1800, ref: p_fin03_01}
+  - {t: 4200, ref: p_fin03_02, open_l3: true}
+
+injections:
+  - {id: inj_gd_01, after_t: 2400, type: guidance_distortion, direction: north,
+     magnitude: medium}

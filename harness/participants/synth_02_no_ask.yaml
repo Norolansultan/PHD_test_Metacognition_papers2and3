@@ -1,0 +1,11 @@
+# Never asks for an interpretation: exposure must come through the radio fallback.
+participant: p118
+session: s0043
+condition: ai_mediated
+style: cautious
+actions:
+  - {at_t:  600, type: query,        text: "locate the hostile force"}
+  - {at_t: 1800, type: probe_answer, ref: p_fin03_01, choice: C, confidence: 2}
+  - {at_t: 1920, type: isa,          value: 2}
+  - {at_t: 4200, type: probe_answer, ref: p_fin03_02, confidence: 3,
+     text: "Unclear. I have no fresh reporting from the east."}

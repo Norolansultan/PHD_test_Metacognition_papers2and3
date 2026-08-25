@@ -1,0 +1,54 @@
+/* White-cell control display. The people portraying the situation need to see
+   everything: truth, what blue believes, and the gap between them. */
+:root{
+  --bg:#0B0E12; --panel:#121820; --panel2:#182029; --line:#2A3542; --ink:#E8EDF3;
+  --muted:#8593A2; --blue:#5B9BD5; --red:#E05A47; --amber:#E0A84A; --green:#5FB878;
+  --mono:ui-monospace,Menlo,Consolas,monospace; --sans:-apple-system,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;
+  display:grid;grid-template-rows:auto 1fr}
+
+header{display:flex;align-items:center;gap:16px;padding:8px 12px;background:var(--panel);
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.clock{font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.clock b{color:var(--amber)}
+.speed{display:flex;gap:4px}
+.speed button{font:600 12px var(--mono);padding:4px 9px;border:1px solid var(--line);
+  background:var(--panel2);color:var(--muted);cursor:pointer;border-radius:2px}
+.speed button[aria-pressed="true"]{background:var(--amber);color:#0B0E12;border-color:var(--amber)}
+header .met{font-family:var(--mono);font-size:12px;color:var(--muted)}
+header .sp{flex:1}
+label.chk{display:flex;gap:5px;align-items:center;color:var(--muted);cursor:pointer;font-size:12px}
+
+main{display:grid;grid-template-columns:minmax(0,1fr) 330px;min-height:0}
+#stage{position:relative;min-height:0;background:#0B0E12}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#readout{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;font-family:var(--mono);
+  font-size:11px;color:var(--muted);background:linear-gradient(transparent,#0B0E12 60%);
+  display:flex;gap:18px;flex-wrap:wrap;pointer-events:none}
+
+aside{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;
+  min-height:0}
+aside h2{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0;padding:9px 12px;border-bottom:1px solid var(--line);
+  background:var(--panel2)}
+.order{padding:10px 12px;border-bottom:1px solid var(--line)}
+.unit{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:7px 12px;
+  border-bottom:1px solid var(--line);cursor:pointer;font-family:var(--mono);font-size:11.5px}
+.unit:hover{background:var(--panel2)}
+.unit.sel{background:#1B2836;box-shadow:inset 3px 0 0 var(--amber)}
+.unit .name{color:var(--ink)}
+.unit .meta{color:var(--muted);grid-column:1/3;font-size:10.5px}
+.bar{height:4px;background:#233040;border-radius:2px;overflow:hidden;grid-column:1/3}
+.bar i{display:block;height:100%}
+.dead .name{color:var(--muted);text-decoration:line-through}
+#log{flex:1;overflow-y:auto;font-family:var(--mono);font-size:11px;line-height:1.5}
+#log div{padding:4px 12px;border-bottom:1px solid #18202A;color:var(--muted)}
+#log .t{color:#5D6B7A;margin-right:6px}
+#log .engagement{color:var(--red)}
+#log .radio_message{color:var(--amber)}
+#log .unit_destroyed{color:var(--red);font-weight:600}
+#log .weather_change{color:var(--blue)}
+#log .decision,#log .answer,#log .query{color:var(--green)}

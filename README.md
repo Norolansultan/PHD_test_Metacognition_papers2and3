@@ -112,12 +112,46 @@ pytest and produces the same result every time. Everything else is replaceable.
 
 ## Getting started
 
-Not yet applicable — this repository currently holds the specification. The first code written is
-`engine/world.py` and its determinism test, not the interface. See
-[docs/implementation/build-order.md](docs/implementation/build-order.md).
+```bash
+make setup      # PyYAML, FastAPI, pytest
+make test       # 34 tests, including determinism, replay and the omniscience test
+make terrain    # regenerate the fictional terrain raster
+make run        # run the scenario headless with two scripted participants
+make viewer     # build the data for the session viewer
+make api        # serve the participant display on :8000
+make white-cell # bake the white cell display into a standalone page
+make e2e        # drive a real browser against it and check the log
+make demo       # all of the above, from a clean checkout
+```
+
+The engine has no web dependencies and no language-model dependency. `make test` is the whole
+verification surface at this stage, and the first test written was the determinism test.
+
+## What is built
+
+Build-order steps 1-4 and 6 are done; step 5 is a gate that needs practitioner advisors, and nothing
+downstream of it is validated until it passes. Progress and the defects found while building are in
+[docs/implementation/status.md](docs/implementation/status.md).
+
+| Component | State |
+|---|---|
+| `engine/world.py` — immutable state, deterministic tick | done |
+| `engine/belief.py` — observations, ageing, sensor coverage, line of sight | done |
+| `engine/projection.py` — what-if, route comparison with time and exposure | done |
+| `engine/intents.py` — closed intent set, normalise → cache → rules | done (model fallback deferred) |
+| `engine/errors.py`, `engine/query.py` — injection and the query path | done |
+| `engine/eventlog.py` — append-only JSONL with engine and schema versions | done |
+| `harness/run.py`, `harness/replay.py` — headless runs and replay from log | done |
+| `scenarios/`, `probes/` — one scenario, two probes, fictional terrain | done |
+| `api/` — FastAPI over the engine, session state, freeze semantics | done |
+| `web/` — participant display: belief-layer map, query, freeze and blanking | done |
+| `web/control.html` — white cell display: truth, courses, reach rings, contact log | done |
+| `engine/combat.py` — deterministic contact, attrition, contact slowdown | done |
+| `tools/e2e_check.py` — a real browser against a real server | done |
 
 ## Status
 
-Specification complete against the August 2026 dissertation plan and the implementation guide.
-**Seven decisions remain open**, two of which block content work: the army echelon and the domain
-for Study II. See [docs/operations/open-decisions.md](docs/operations/open-decisions.md).
+Specification complete against the August 2026 dissertation plan and the implementation guide, and
+the engine runs. **Seven decisions remain open**, two of which block content work: the army echelon
+and the domain for Study II. See
+[docs/operations/open-decisions.md](docs/operations/open-decisions.md).

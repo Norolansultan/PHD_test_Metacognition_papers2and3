@@ -1,0 +1,17 @@
+participant: p117
+session: s0042
+condition: ai_mediated
+style: plain
+actions:
+  - {at_t:  600, type: query,        text: "where is the enemy"}
+  - {at_t: 1320, type: query,        text: "what is the enemy strength"}
+  - {at_t: 1800, type: probe_answer, ref: p_fin03_01, choice: B, confidence: 3}
+  - {at_t: 1920, type: isa,          value: 3}
+  - {at_t: 4320, type: query,        text: "where will the enemy be in 30 minutes"}
+  - {at_t: 2520, type: query,        text: "what does the order mean for us"}
+  - {at_t: 2880, type: query,        text: "compare the two routes"}
+  - {at_t: 3000, type: decision,     action: withdraw, axis: west, unit: blue_1pl,
+     route: [[2850,3050],[2850,7550],[4150,7550]]}
+  - {at_t: 4200, type: probe_answer, ref: p_fin03_02, confidence: 2,
+     text: "Enemy continues west of the lake toward KELO; our western move is contested."}
+  - {at_t: 4320, type: isa,          value: 4}
