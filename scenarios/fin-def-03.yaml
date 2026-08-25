@@ -20,18 +20,36 @@ weather:
   wind_dir_deg: 210
   wind_ms: 4.0
   visibility_m: 8000
+  temp_c: 3
+  precipitation: none
+
+# Scheduled weather. The picture must keep changing even where nothing is firing.
+weather_changes:
+  - {t: 1500, wind_dir_deg: 235, wind_ms: 6.0, visibility_m: 5500, temp_c: 2,
+     precipitation: rain}
+  - {t: 3600, wind_dir_deg: 260, wind_ms: 8.0, visibility_m: 3200, temp_c: 1,
+     precipitation: rain}
 
 entities:
   # blue_1pl sits on the junction of the northern lateral: both corridors are
   # equally available from here, which is what makes the branch forced.
   - {id: blue_1pl,     side: blue, kind: infantry_platoon, pos: [4150, 3050], strength: 1.0}
-  - {id: blue_2pl,     side: blue, kind: infantry_platoon, pos: [7050, 3050], strength: 1.0}
+  # blue_2pl is the covering force on the eastern flank. It meets the advance
+  # first, and it is outranged: a mech company reaches 2200 m, a platoon 900 m.
+  - {id: blue_2pl,     side: blue, kind: infantry_platoon, pos: [6300, 3050], strength: 1.0}
   - {id: blue_drone_a, side: blue, kind: drone, pos: [4150, 2600], endurance_s: 2400,
-     waypoint: [7400, 5400]}
-  # Red approaches KELO down the eastern corridor: the lake blocks a direct line,
-  # which is why the corridors exist at all.
-  - {id: red_coy_x,    side: red,  kind: mech_company, pos: [8300, 3600], strength: 0.9,
-     waypoint: [7050, 7550]}
+     waypoint: [7600, 3200]}
+  # Red advances west along the northern lateral, presses the junction, and then
+  # turns south down the WESTERN corridor. That is what makes the fast route
+  # genuinely dangerous rather than abstractly exposed, and it is what the
+  # withdrawal order is a response to.
+  - {id: red_coy_x,    side: red,  kind: mech_company, pos: [8500, 3050], strength: 0.9,
+     route: [[6000, 3050], [2850, 3050], [2850, 7550], [4150, 7550]]}
+  # A reconnaissance element probing the eastern corridor. It arrives later and
+  # gives the situation a second axis, so the picture is never resolved into one
+  # line of contact.
+  - {id: red_recon_1,  side: red,  kind: recon_troop, pos: [8600, 4600], strength: 0.7,
+     route: [[7050, 4600], [7050, 6800], [5200, 7550]]}
 
 sensors:
   - {entity: blue_drone_a, range_m: 3000, pos_error_m:  50, interval_s:  60}

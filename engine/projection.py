@@ -43,6 +43,7 @@ class ProjectionOutcome:
 # expert-validation gate (build order step 5).
 SPEED_ASSUMPTION = {
     "mech_company": 2.5,
+    "recon_troop": 3.5,
     "infantry_platoon": 1.0,
     "drone": 25.0,
 }

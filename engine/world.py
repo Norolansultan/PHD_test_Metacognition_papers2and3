@@ -33,8 +33,14 @@ AIR_SPEED = 25.0
 # derived from CMO runs.
 MOBILITY = {
     "infantry_platoon": 0.30,
-    "mech_company": 1.00,
+    "mech_company": 0.55,
+    "recon_troop": 0.80,
 }
+
+# A unit in contact does not move at march speed. This is what makes a covering
+# force worth something, and it is why the picture keeps developing instead of
+# resolving in the first ten minutes.
+CONTACT_SPEED_FACTOR = 0.22
 
 
 @dataclass(frozen=True)
@@ -58,6 +64,13 @@ class Weather:
     wind_dir_deg: float = 0.0
     wind_ms: float = 3.0
     visibility_m: float = 8000.0
+    temp_c: float = 4.0
+    precipitation: str = "none"  # "none" | "rain" | "snow"
+
+    def label(self) -> str:
+        sky = {"none": "clear", "rain": "rain", "snow": "snow"}[self.precipitation]
+        return (f"{sky} · {self.temp_c:.0f} °C · wind {self.wind_ms:.0f} m/s "
+                f"from {self.wind_dir_deg:.0f}°")
 
 
 @dataclass(frozen=True)
@@ -90,10 +103,14 @@ def _advance(e: Entity, terrain: TerrainGrid, dt: int) -> Entity:
             return replace(e, waypoint=e.route[0], route=e.route[1:], status="moving")
         return replace(e, waypoint=None, status="static", speed=0.0)
     v = terrain_speed(e, terrain, e.pos)
+    if e.status == "engaged":
+        v *= CONTACT_SPEED_FACTOR
     if v <= 0.0:
         # Standing in impassable terrain: hold rather than swim.
         return replace(e, status="blocked", speed=0.0)
     stepd = min(v * dt, d)
+    if stepd <= 0.0:
+        return replace(e, speed=0.0)
     ux = (e.waypoint[0] - e.pos[0]) / d
     uy = (e.waypoint[1] - e.pos[1]) / d
     npos = (e.pos[0] + ux * stepd, e.pos[1] + uy * stepd)

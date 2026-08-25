@@ -1,4 +1,4 @@
-.PHONY: setup test run replay terrain viewer api e2e demo clean
+.PHONY: setup test run replay terrain viewer api white-cell e2e demo clean
 
 PY ?= python3
 SCENARIO ?= scenarios/fin-def-03.yaml
@@ -26,6 +26,10 @@ viewer: run
 
 api:
 	$(PY) -m uvicorn api.main:app --port 8000 --reload
+
+# The situation-control display, baked to a page that needs no server.
+white-cell:
+	$(PY) tools/make_control_replay.py logs/white-cell.html
 
 # End to end: a real browser against a real server. Start the API first.
 e2e:

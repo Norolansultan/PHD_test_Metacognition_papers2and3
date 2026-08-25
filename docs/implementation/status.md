@@ -15,7 +15,9 @@ Tracked against [build-order.md](build-order.md). Updated when a step's definiti
 | 8 · Frontend | **done** | `web/` draws from the belief layer the API sends; `api/` is a thin layer over the engine. `tools/e2e_check.py` drives a real browser against a real server |
 | 9 · Freeze, blanking, probes, ISA | **done** | The clock stops, the display is blanked, the channel refuses and logs the refusal, and the probe carries confidence and ISA before it closes — `tests/test_api.py` |
 | 10 · Error injection | **done** | `tests/test_injection.py`; `tests/test_exposure_route.py` covers the radio fallback |
-| 11 · Demo mode | **done** for replay | `tools/make_viewer.py` produces the debug panel over real logs |
+| 11 · Demo mode | **done** | `tools/make_viewer.py` (participant replay) and `tools/make_control_replay.py` (white cell, standalone) both produce debug surfaces over real runs |
+| — · **White cell display** | **done** | `web/control.html` over `/api/truth`: symbols, strength, courses, weapon and sensor reach, fire lines, blue's believed picture, message log, time acceleration. See [white-cell.md](../operations/white-cell.md) |
+| — · **Continuous development** | **done** | Deterministic contact resolution, attrition, contact slowdown, scheduled weather. `tests/test_combat.py` |
 | 12-13 · Pilots | not started | Blocked by step 5 |
 
 ## What the gate at step 5 blocks
@@ -47,6 +49,8 @@ Recorded because they are the kind that would have survived into collection.
 | B-6 | The two corridors were not comparable in cost (89 min against 204 min) | The branch would have been choosable on distance alone, and exposure to the pulled channel would have been self-selected — the failure K-6 exists to prevent |
 | B-7 | The scenario ran 45 minutes while the measurement documents specify a 60-90 minute session, and one corridor took longer than the whole run | A route the participant cannot finish is not a decision they can make |
 | B-8 | A unit could only be ordered to a single waypoint, so a corridor order drove it straight into the lake and it stopped | **Neither branch of the forced choice would have been executable.** The participant could see the trade-off, ask about it, decide — and then watch the platoon stop at the shore |
+| B-9 | The decision log recorded the action but not the route it carried, so replay reconstructed a different session | Caught by the replay test the moment contact made positions matter. Silent until then, and fatal to reproducibility afterwards |
+| B-10 | Nothing in the scenario ever met anything: no contact, no losses, no change | The white cell had nothing to portray, and the map read as a picture rather than a situation — which is what the supervisors saw |
 
 B-6 was found by the experimental-design gate in `tests/test_terrain.py`, which is the reason that
 gate is a test rather than a paragraph.

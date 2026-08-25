@@ -90,3 +90,29 @@ def test_asking_for_the_interpretation_suppresses_the_radio_fallback():
     assert "order_interpretation_fallback" not in tags
     routes = [r.get("guidance_route") for r in s.log.rows if r.get("guidance_route")]
     assert routes == ["query"]
+
+
+def test_the_white_cell_sees_truth_and_the_participant_does_not():
+    """Two views, one session. The control display is layer 1; the participant
+    display is layer 2. They are served on different endpoints and the
+    participant bundle never references the truth one (ADR-001)."""
+    s = Session(participant="t5", scenario_id="fin-def-03")
+    _run_to(s, 1500)
+
+    truth = s.truth_view()
+    ids = {e["id"] for e in truth["entities"]}
+    assert "red_coy_x" in ids and "red_recon_1" in ids
+    red = next(e for e in truth["entities"] if e["id"] == "red_coy_x")
+    assert "strength" in red and "route" in red and "weapon_range_m" in red
+
+    view = s.view()
+    assert "red_coy_x" not in view["own"]
+    for b in view["beliefs"]:
+        assert set(b) == {"subject", "pos", "age_s", "uncertainty_m", "source",
+                          "channel", "attrs"}
+        assert "strength" not in b or "route" not in b
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    app_js = open(os.path.join(root, "web", "app.js"), encoding="utf-8").read()
+    assert "/api/truth" not in app_js, "the participant bundle references the truth endpoint"
+    assert "tick_n" not in app_js, "the participant bundle can accelerate the clock"

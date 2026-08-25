@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>White cell — situation control</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230B0E12'/%3E%3Crect x='3' y='5' width='10' height='6' fill='none' stroke='%235B9BD5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="control.css">
+
+<header>
+  <span class="clock">T + <b id="clock">0:00</b> <span id="remain"></span></span>
+  <div class="speed" id="speed">
+    <button data-x="0" aria-pressed="true">❚❚</button>
+    <button data-x="1">×1</button>
+    <button data-x="2">×2</button>
+    <button data-x="5">×5</button>
+    <button data-x="15">×15</button>
+    <button data-x="30">×30</button>
+  </div>
+  <span class="met" id="met">—</span>
+  <span class="sp"></span>
+  <label class="chk"><input type="checkbox" id="cWeapon" checked> weapon reach</label>
+  <label class="chk"><input type="checkbox" id="cSensor" checked> sensor reach</label>
+  <label class="chk"><input type="checkbox" id="cBelief" checked> blue's picture</label>
+  <label class="chk"><input type="checkbox" id="cRoute" checked> plotted courses</label>
+</header>
+
+<main>
+  <div id="stage">
+    <canvas id="map"></canvas>
+    <div id="readout">
+      <span id="rCoord">—</span><span id="rTerrain"></span><span id="rElev"></span>
+      <span id="rScale"></span>
+    </div>
+  </div>
+  <aside>
+    <h2>Order of battle</h2>
+    <div id="units"></div>
+    <h2>Message log</h2>
+    <div id="log"></div>
+  </aside>
+</main>
+
+<script src="control.js"></script>

@@ -25,7 +25,8 @@ from engine.errors import Injector
 from engine.eventlog import EventLog
 from engine.intents import IntentParser
 from engine.query import ConditionConfig, QueryEngine
-from engine.world import TICK_S, step, with_route
+from engine.tick import advance
+from engine.world import TICK_S, with_route
 
 
 def load_participant(path: str) -> dict:
@@ -128,7 +129,8 @@ def run(scenario_path: str, participant_path: str, out_path: str, root: str = ".
                 log.write(t, "isa_load", value=a["value"])
             elif kind == "decision":
                 log.write(t, "decision", action=a["action"], axis=a.get("axis"),
-                          unit=a.get("unit"))
+                          unit=a.get("unit"), route=a.get("route"),
+                          target=a.get("target"))
                 if a.get("unit") and a.get("route"):
                     world = with_route(world, a["unit"],
                                        [(float(p[0]), float(p[1])) for p in a["route"]])
@@ -138,13 +140,25 @@ def run(scenario_path: str, participant_path: str, out_path: str, root: str = ".
             elif kind == "decision_revert":
                 log.write(t, "decision_revert", reverts=a.get("reverts"))
 
-        # 7. Advance the world.
+        # 7. Advance the world: movement, contact, weather.
         if world.t >= s.duration_s:
             break
-        world = step(world, rng, TICK_S)
+        tr = advance(world, rng, s.weather_changes, TICK_S)
+        world = tr.state
+        if tr.weather_changed:
+            log.write(world.t, "weather_change", weather=world.weather,
+                      label=world.weather.label())
+        for e in tr.engagements:
+            log.write(world.t, "engagement", shooter=e.shooter, target=e.target,
+                      range_m=e.range_m, damage=e.damage)
+        for eid in tr.destroyed:
+            log.write(world.t, "unit_destroyed", entity=eid)
         if world.t % 60 == 0:
             log.write(world.t, "world_tick",
-                      entities={k: v.pos for k, v in sorted(world.entities.items())})
+                      entities={k: {"pos": list(v.pos), "strength": round(v.strength, 3),
+                                    "status": v.status, "heading": round(v.heading, 1),
+                                    "speed": round(v.speed, 2)}
+                                for k, v in sorted(world.entities.items())})
 
     log.write(s.duration_s, "debrief_shown",
               covers=[i.kind for i in s.injections])

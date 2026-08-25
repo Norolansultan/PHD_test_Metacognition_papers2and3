@@ -15,6 +15,7 @@ from engine.version import ENGINE_VERSION, SCHEMA_VERSION
 
 EVENT_TYPES = (
     "session_start", "world_tick", "observation_created", "radio_message",
+    "engagement", "unit_destroyed", "weather_change",
     "query", "answer", "probe_shown", "probe_answer", "confidence", "isa_load",
     "decision", "decision_revert", "freeze_start", "freeze_end", "screen_blanked",
     "focus_lost", "attribution_free", "attribution_forced", "debrief_shown",

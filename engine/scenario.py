@@ -40,6 +40,12 @@ class Order:
 
 
 @dataclass(frozen=True)
+class WeatherChange:
+    t: int
+    weather: Weather
+
+
+@dataclass(frozen=True)
 class Scenario:
     id: str
     version: int
@@ -53,6 +59,7 @@ class Scenario:
     probes: list[ProbeRef]
     injections: list[Injection]
     order: Order
+    weather_changes: list[WeatherChange]
 
 
 def _tuple(v) -> tuple[float, float]:
@@ -78,22 +85,27 @@ def load(path: str, root: str | None = None) -> Scenario:
             pos=_tuple(e["pos"]),
             strength=float(e.get("strength", 1.0)),
             supply=float(e.get("supply", 1.0)),
-            status="moving" if e.get("waypoint") else "static",
-            waypoint=_tuple(e["waypoint"]) if e.get("waypoint") else None,
+            status="moving" if (e.get("waypoint") or e.get("route")) else "static",
+            waypoint=(_tuple(e["waypoint"]) if e.get("waypoint")
+                      else _tuple(e["route"][0]) if e.get("route") else None),
+            route=(tuple(_tuple(p) for p in e["route"][1:]) if e.get("route") else ()),
             endurance_s=e.get("endurance_s"),
         )
     w = d.get("weather", {})
+    def _weather(src: dict) -> Weather:
+        return Weather(
+            wind_dir_deg=float(src.get("wind_dir_deg", 0)),
+            wind_ms=float(src.get("wind_ms", 3)),
+            visibility_m=float(src.get("visibility_m", 8000)),
+            temp_c=float(src.get("temp_c", 4)),
+            precipitation=str(src.get("precipitation", "none")),
+        )
+
     initial = WorldState(
-        t=0,
-        entities=ents,
-        terrain=terrain,
-        weather=Weather(
-            wind_dir_deg=float(w.get("wind_dir_deg", 0)),
-            wind_ms=float(w.get("wind_ms", 3)),
-            visibility_m=float(w.get("visibility_m", 8000)),
-        ),
-        seed=int(d["seed"]),
+        t=0, entities=ents, terrain=terrain, weather=_weather(w), seed=int(d["seed"]),
     )
+    weather_changes = [WeatherChange(int(c["t"]), _weather(c))
+                       for c in d.get("weather_changes", [])]
     sensors = [
         Sensor(s["entity"], float(s["range_m"]), float(s["pos_error_m"]), int(s["interval_s"]))
         for s in d.get("sensors", [])
@@ -127,6 +139,7 @@ def load(path: str, root: str | None = None) -> Scenario:
         duration_s=int(d["duration_s"]), domain=d["domain"],
         echelon=d.get("echelon", "unspecified"), initial=initial, sensors=sensors,
         events=events, probes=probes, injections=injections, order=order,
+        weather_changes=weather_changes,
     )
 
 

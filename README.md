@@ -114,11 +114,12 @@ pytest and produces the same result every time. Everything else is replaceable.
 
 ```bash
 make setup      # PyYAML, FastAPI, pytest
-make test       # 28 tests, including determinism, replay and the omniscience test
+make test       # 34 tests, including determinism, replay and the omniscience test
 make terrain    # regenerate the fictional terrain raster
 make run        # run the scenario headless with two scripted participants
 make viewer     # build the data for the session viewer
 make api        # serve the participant display on :8000
+make white-cell # bake the white cell display into a standalone page
 make e2e        # drive a real browser against it and check the log
 make demo       # all of the above, from a clean checkout
 ```
@@ -144,6 +145,8 @@ downstream of it is validated until it passes. Progress and the defects found wh
 | `scenarios/`, `probes/` — one scenario, two probes, fictional terrain | done |
 | `api/` — FastAPI over the engine, session state, freeze semantics | done |
 | `web/` — participant display: belief-layer map, query, freeze and blanking | done |
+| `web/control.html` — white cell display: truth, courses, reach rings, contact log | done |
+| `engine/combat.py` — deterministic contact, attrition, contact slowdown | done |
 | `tools/e2e_check.py` — a real browser against a real server | done |
 
 ## Status

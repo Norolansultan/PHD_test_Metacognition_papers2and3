@@ -59,6 +59,12 @@ class FocusBody(BaseModel):
     reason: str
 
 
+class TickNBody(BaseModel):
+    pid: str
+    n: int = 1
+    truth: bool = False
+
+
 def _s(pid: str) -> Session:
     return SESSIONS[pid]
 
@@ -120,6 +126,21 @@ def finish(b: StartBody) -> dict:
     return {"saved": path, "events": len(s.log.rows)}
 
 
+@app.post("/api/truth")
+def truth(b: StartBody) -> dict:
+    """WHITE CELL ONLY (see Session.truth_view). Never called by web/app.js."""
+    return _s(b.pid).truth_view()
+
+
+@app.post("/api/tick_n")
+def tick_n(b: TickNBody) -> dict:
+    """Advance several ticks at once, for the white cell's time acceleration."""
+    s = _s(b.pid)
+    for _ in range(max(1, min(120, b.n))):
+        s.tick()
+    return s.truth_view() if b.truth else s.view()
+
+
 @app.get("/api/scenario/{scenario_id}")
 def scenario_meta(scenario_id: str) -> dict:
     import base64
@@ -129,9 +150,15 @@ def scenario_meta(scenario_id: str) -> dict:
     s = scen.load(os.path.join(ROOT, f"scenarios/{scenario_id}.yaml"), root=ROOT)
     with open(os.path.join(ROOT, "scenarios/terrain/valley_a.png"), "rb") as fh:
         png = base64.b64encode(fh.read()).decode("ascii")
+    from engine.query import KELO, ROUTE_EAST, ROUTE_WEST
+
     return {"terrain_png": png, "cell_m": s.initial.terrain.cell_m,
             "legend": s.initial.terrain.legend, "duration_s": s.duration_s,
-            "width_m": s.initial.terrain.width_m}
+            "width_m": s.initial.terrain.width_m,
+            "routes": {"west": [list(p) for p in ROUTE_WEST],
+                       "east": [list(p) for p in ROUTE_EAST]},
+            "objective": list(KELO),
+            "junction": [4150.0, 3050.0]}
 
 
 app.mount("/", StaticFiles(directory=os.path.join(ROOT, "web"), html=True), name="web")

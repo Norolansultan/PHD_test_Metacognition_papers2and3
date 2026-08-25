@@ -49,7 +49,7 @@ def participant_spec_from_log(path: str) -> dict:
             spec["actions"].append({"at_t": t, "type": "isa", "value": r["value"]})
         elif r["type"] == "decision":
             a = {"at_t": t, "type": "decision", "action": r["action"]}
-            for k in ("axis", "unit"):
+            for k in ("axis", "unit", "route", "target"):
                 if r.get(k) is not None:
                     a[k] = r[k]
             spec["actions"].append(a)

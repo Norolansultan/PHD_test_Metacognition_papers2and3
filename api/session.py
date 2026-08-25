@@ -17,8 +17,10 @@ from engine.belief import BeliefState, sense
 from engine.errors import Injector
 from engine.eventlog import EventLog
 from engine.intents import IntentParser
+from engine.combat import WEAPON as COMBAT_WEAPON
 from engine.query import ConditionConfig, QueryEngine
-from engine.world import TICK_S, step, with_route
+from engine.tick import advance
+from engine.world import TICK_S, with_route
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -55,6 +57,7 @@ class Session:
         self.freeze: Freeze | None = None
         self.finished = False
         self.pending: list[dict] = []  # radio traffic the client has not shown yet
+        self.last_engagements: list = []
         self._probes = {p.t: p for p in self.s.probes}
         self._events: dict[int, list] = {}
         for ev in self.s.events:
@@ -78,7 +81,20 @@ class Session:
                 self.log.write(self.s.duration_s, "session_end",
                                observations=len(self.belief.observations))
             return
-        self.world = step(self.world, self.rng, TICK_S)
+        tr = advance(self.world, self.rng, self.s.weather_changes, TICK_S)
+        self.world = tr.state
+        if tr.weather_changed:
+            self.log.write(self.world.t, "weather_change", weather=self.world.weather,
+                           label=self.world.weather.label())
+            self._radio("met", f"Weather: {self.world.weather.label()}")
+        for e in tr.engagements:
+            self.log.write(self.world.t, "engagement", shooter=e.shooter,
+                           target=e.target, range_m=e.range_m, damage=e.damage)
+        self.last_engagements = tr.engagements
+        for eid in tr.destroyed:
+            self.log.write(self.world.t, "unit_destroyed", entity=eid)
+            if eid.startswith("blue"):
+                self._radio(eid, "No further contact from this callsign.")
         self._tick_world_events()
 
     def _tick_world_events(self) -> None:
@@ -162,6 +178,55 @@ class Session:
                        during_freeze=self.freeze is not None)
 
     # ------------------------------------------------------------------ view
+
+    def truth_view(self) -> dict:
+        """WHITE CELL ONLY. Ground truth, for the people portraying the situation.
+
+        This is layer 1 and it must never reach a participant. It is served on a
+        separate endpoint, the participant bundle never references it, and
+        tests/test_api.py asserts both.
+        """
+        ents = []
+        for e in sorted(self.world.entities.values(), key=lambda x: x.id):
+            w = COMBAT_WEAPON.get(e.kind, {})
+            sensor = next((s for s in self.s.sensors if s.entity == e.id), None)
+            ents.append({
+                "id": e.id, "side": e.side, "kind": e.kind, "pos": list(e.pos),
+                "heading": round(e.heading, 1), "speed": round(e.speed, 2),
+                "strength": round(e.strength, 3), "status": e.status,
+                "waypoint": list(e.waypoint) if e.waypoint else None,
+                "route": [list(p) for p in e.route],
+                "endurance_s": e.endurance_s,
+                "weapon_range_m": w.get("range_m", 0.0),
+                "sensor_range_m": (sensor.range_m if sensor else 0.0),
+            })
+        # What blue believes, so the white cell can see the gap it is portraying.
+        believed = []
+        for subject in self.belief.known_subjects(self.world.t):
+            est = self.belief.best_estimate(subject, self.world.t)
+            if est and est.pos:
+                believed.append({"subject": subject, "pos": list(est.pos),
+                                 "age_s": est.age_s,
+                                 "uncertainty_m": round(est.uncertainty_m)})
+        return {
+            "t": self.world.t, "duration_s": self.s.duration_s,
+            "entities": ents, "believed": believed,
+            "engagements": [{"shooter": e.shooter, "target": e.target,
+                             "range_m": e.range_m, "damage": e.damage}
+                            for e in self.last_engagements],
+            "weather": {"label": self.world.weather.label(),
+                        "wind_dir_deg": self.world.weather.wind_dir_deg,
+                        "wind_ms": self.world.weather.wind_ms,
+                        "visibility_m": self.world.weather.visibility_m,
+                        "temp_c": self.world.weather.temp_c,
+                        "precipitation": self.world.weather.precipitation},
+            "log_tail": [r for r in self.log.rows[-40:]
+                         if r["type"] in ("radio_message", "engagement", "unit_destroyed",
+                                          "weather_change", "query", "answer", "decision",
+                                          "freeze_start", "probe_shown")],
+            "freeze": (None if self.freeze is None else {"ref": self.freeze.probe_ref}),
+            "finished": self.finished,
+        }
 
     def view(self) -> dict:
         """Everything the client may render. Belief layer only — never truth."""
